@@ -1,19 +1,10 @@
 import { Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { GeoJSON } from "react-leaflet/GeoJSON";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
-import { LatLng, LatLngExpression, Map, latLng } from "leaflet";
+import { LatLng, latLng } from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeoJsonObject } from "geojson";
-
-interface RouteProperties {
-  data: GeoJsonObject;
-}
-
-function Route(props: RouteProperties) {
-  // XXX: need to have a unique key each time to force a rerender
-  return <GeoJSON key={JSON.stringify(props.data)} data={props.data} />;
-}
+import { Route } from "./Route";
 
 interface NewMarkerDialogProperties {
   position: LatLng;
@@ -85,24 +76,19 @@ function WaypointMarker(props: MarkerProperties) {
 
 interface MapProperties {
   waypoints: LatLng[];
+  route_data: GeoJsonObject | undefined;
 
   // callbacks
   callback_add_waypoint: (pos: LatLng) => void;
+  callback_set_waypoint: (idx: number, pos: LatLng) => void;
+  callback_delete_waypoint: (idx: number) => void;
 }
 
 function Map(props: MapProperties) {
   const map = useMap();
-  const [waypoints, setWaypoints] = useState<LatLng[]>([]);
-  const [routeData, setRouteData] = useState<GeoJsonObject | undefined>();
   const [newMarkerPos, setNewMarkerPos] = useState<LatLng | undefined>(
     undefined,
   );
-
-  const add_waypoint = useCallback((pos: LatLng) => {
-    setWaypoints((prev) => {
-      return [...prev, pos];
-    });
-  }, []);
 
   useEffect(() => {
     map.scrollWheelZoom.enable();
@@ -114,6 +100,74 @@ function Map(props: MapProperties) {
     return () => {
       map.off("click");
     };
+  }, []);
+
+  return (
+    <div>
+      {newMarkerPos ? (
+        <NewMarkerDialog
+          position={newMarkerPos}
+          confirm_callback={props.callback_add_waypoint}
+        />
+      ) : (
+        <></>
+      )}
+      {props.route_data ? <Route data={props.route_data} /> : <></>}
+      {props.waypoints.map((waypoint, idx) => {
+        return (
+          <WaypointMarker
+            index={idx}
+            position={waypoint}
+            position_changed_callback={props.callback_set_waypoint}
+            remove_callback={props.callback_delete_waypoint}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+interface SidebarProperties {
+  waypoints: LatLng[];
+  route: GeoJsonObject | undefined;
+}
+
+function Sidebar() {
+  let route_distance = 0;
+  if (route_distance !== undefined) {
+  }
+  return (
+    <div>
+      <label> Hallo </label>
+    </div>
+  );
+}
+
+function App() {
+  const position = latLng(53.6, 10);
+  const [waypoints, setWaypoints] = useState<LatLng[]>([]);
+  const [routeData, setRouteData] = useState<GeoJsonObject | undefined>(
+    undefined,
+  );
+
+  const callback_add_waypoint = (pos: LatLng) => {
+    setWaypoints((prev) => [...prev, pos]);
+  };
+
+  const callback_set_waypoint = (idx: number, pos: LatLng) => {
+    setWaypoints((prev) => {
+      let new_waypoints = [...prev];
+      new_waypoints[idx] = pos;
+      return new_waypoints;
+    });
+  };
+
+  const callback_remove_waypoint = useCallback((idx: number) => {
+    setWaypoints((prev) => {
+      let new_waypoints = [...prev];
+      new_waypoints.splice(idx, 1);
+      return new_waypoints;
+    });
   }, []);
 
   // TODO: change so that each segment is calculated separately as they are independent
@@ -153,61 +207,6 @@ function Map(props: MapProperties) {
     }
   }, [waypoints]);
 
-  const dragged_callback = useCallback((idx: number, pos: LatLng) => {
-    setWaypoints((prev) => {
-      // Need to copy due to react stuff
-      let new_waypoints = [...prev];
-      new_waypoints[idx] = pos;
-      return new_waypoints;
-    });
-  }, []);
-
-  const remove_callback = useCallback((idx: number) => {
-    setWaypoints((prev) => {
-      let new_waypoints = [...prev];
-      new_waypoints.splice(idx, 1);
-      return new_waypoints;
-    });
-  }, []);
-
-  const new_marker_callback = (pos: LatLng) => add_waypoint(pos);
-
-  return (
-    <div>
-      {newMarkerPos ? (
-        <NewMarkerDialog
-          position={newMarkerPos}
-          confirm_callback={new_marker_callback}
-        />
-      ) : (
-        <></>
-      )}
-      {routeData ? <Route data={routeData} /> : <></>}
-      {waypoints.map((waypoint, idx) => {
-        return (
-          <WaypointMarker
-            index={idx}
-            position={waypoint}
-            position_changed_callback={dragged_callback}
-            remove_callback={remove_callback}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-function Sidebar() {
-  return (
-    <div>
-      <label> Hallo </label>
-    </div>
-  );
-}
-
-function App() {
-  const position = latLng(53.6, 10);
-
   return (
     <div>
       <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
@@ -215,7 +214,13 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Map />
+        <Map
+          waypoints={waypoints}
+          route_data={routeData}
+          callback_add_waypoint={callback_add_waypoint}
+          callback_set_waypoint={callback_set_waypoint}
+          callback_delete_waypoint={callback_remove_waypoint}
+        />
       </MapContainer>
       <Sidebar />
     </div>
