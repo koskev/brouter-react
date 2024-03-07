@@ -5,6 +5,7 @@ import { LatLng, latLng } from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GeoJsonObject } from "geojson";
 import { Route } from "./Route";
+import { GeoRoute } from "./GeoSegment";
 
 interface NewMarkerDialogProperties {
   position: LatLng;
@@ -45,7 +46,6 @@ function WaypointMarker(props: MarkerProperties) {
       dragend() {
         const marker = markerRef.current;
         if (marker !== null) {
-          console.log(marker.getLatLng());
           props.position_changed_callback(props.index, marker.getLatLng());
         }
       },
@@ -69,6 +69,10 @@ function WaypointMarker(props: MarkerProperties) {
     >
       <Popup ref={popupRef}>
         <button onClick={handle_remove_button}> Remove Waypoint </button>
+        <label>
+          {" "}
+          Lat: {props.position.lat} Lng: {props.position.lng}{" "}
+        </label>
       </Popup>
     </Marker>
   );
@@ -76,7 +80,7 @@ function WaypointMarker(props: MarkerProperties) {
 
 interface MapProperties {
   waypoints: LatLng[];
-  route_data: GeoJsonObject | undefined;
+  route_data: GeoRoute | undefined;
 
   // callbacks
   callback_add_waypoint: (pos: LatLng) => void;
@@ -129,16 +133,15 @@ function Map(props: MapProperties) {
 
 interface SidebarProperties {
   waypoints: LatLng[];
-  route: GeoJsonObject | undefined;
+  route: GeoRoute | undefined;
 }
 
-function Sidebar() {
-  let route_distance = 0;
-  if (route_distance !== undefined) {
-  }
+function Sidebar(props: SidebarProperties) {
+  // NEED unwrap_or....
+  const distance = props.route ? props.route.get_distance() : 0;
   return (
     <div>
-      <label> Hallo </label>
+      <label> Total Distance: {distance} </label>
     </div>
   );
 }
@@ -146,9 +149,7 @@ function Sidebar() {
 function App() {
   const position = latLng(53.6, 10);
   const [waypoints, setWaypoints] = useState<LatLng[]>([]);
-  const [routeData, setRouteData] = useState<GeoJsonObject | undefined>(
-    undefined,
-  );
+  const [routeData, setRouteData] = useState<GeoRoute | undefined>(undefined);
 
   const callback_add_waypoint = (pos: LatLng) => {
     setWaypoints((prev) => [...prev, pos]);
@@ -181,12 +182,11 @@ function App() {
         `https://brouter.kokev.de/brouter?lonlats=${coords_str}&profile=trekking&alternativeidx=0&format=geojson`,
       )
         .then((e) => {
-          console.log(e);
           if (e.ok) {
             e.json()
               .then((data) => {
-                console.log(data);
-                setRouteData((_prev) => data);
+                let geo_route = new GeoRoute(data);
+                setRouteData((_prev) => geo_route);
               })
               .catch((e) => {
                 console.error(
@@ -197,7 +197,7 @@ function App() {
           } else {
             // Error code
             e.text().then((text) => {
-              console.log(`Failed to calculate route. Response: ${text}`);
+              console.error(`Failed to calculate route. Response: ${text}`);
             });
           }
         })
@@ -222,7 +222,7 @@ function App() {
           callback_delete_waypoint={callback_remove_waypoint}
         />
       </MapContainer>
-      <Sidebar />
+      <Sidebar waypoints={waypoints} route={routeData} />
     </div>
   );
 }

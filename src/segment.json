@@ -1,0 +1,33 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "creator": "BRouter-1.7.3",
+        "name": "brouter_trekking_0",
+        "track-length": "68",
+        "filtered ascend": "0",
+        "plain-ascend": "1",
+        "total-time": "12",
+        "total-energy": "1244",
+        "cost": "180",
+        "messages": [
+          ["Longitude", "Latitude", "Elevation", "Distance", "CostPerKm", "ElevCost", "TurnCost", "NodeCost", "InitialCost", "WayTags", "NodeTags", "Time", "Energy"],
+          ["10087361", "53554024", "15", "65", "1350", "0", "89", "0", "0", "reversedirection=yes highway=service surface=asphalt", "", "11", "1190"],
+          ["10087319", "53554021", "15", "3", "1350", "0", "0", "0", "0", "reversedirection=yes highway=service surface=paving_stones", "", "12", "1244"]
+        ],
+        "times": [0,4.284,11.902,12.448]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [10.087962, 53.554265, 15.0],
+          [10.087985, 53.554049, 15.25],
+          [10.087361, 53.554024, 15.5],
+          [10.087319, 53.554021, 15.5]
+        ]
+      }
+    }
+  ]
+}
