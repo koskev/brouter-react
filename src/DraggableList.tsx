@@ -50,10 +50,10 @@ export function DraggableList(props: DraggableListProps) {
       const newOrder = swap(order.current, curIndex, curRow);
       api.start(fn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
       if (!active) {
-        order.current = newOrder;
         if (order.current !== newOrder) {
           props.callback_order_change(newOrder);
         }
+        order.current = newOrder;
       }
     },
     { preventDefault: true }, // Prevent default to prevent issue with text selecetion after drag
