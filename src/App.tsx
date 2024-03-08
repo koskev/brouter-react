@@ -32,8 +32,6 @@ function App() {
     });
   }, []);
 
-  // TODO: change so that each segment is calculated separately as they are independent
-  // TODO: only calculate changed waypoint segments
   useEffect(() => {
     if (waypoints.length >= 2) {
       routeData

@@ -1,17 +1,15 @@
-import { GeoJsonObject } from "geojson";
-import { GeoJSON, Polyline, Popup, useMapEvents } from "react-leaflet";
-import { GeoRoute, GeoRoutes } from "./GeoSegment";
-import { useMemo, useState } from "react";
+import { Polyline, Popup } from "react-leaflet";
+import { GeoRoutes } from "./GeoSegment";
+import { useState } from "react";
 
 export interface RouteProperties {
     data: GeoRoutes;
 }
 
 export function Route(props: RouteProperties) {
-    // XXX: need to have a unique key each time to force a rerender
     let lines = props.data.get_lang_lats();
 
-    const [color, setColor] = useState("blue");
+    const [color, _setColor] = useState("blue");
 
     return (
         <div>
