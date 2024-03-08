@@ -11,18 +11,13 @@ export function Sidebar(props: SidebarProperties) {
   // NEED unwrap_or....
   const distance = props.route ? props.route.get_distance() : 0;
 
+  // XXX: We need the key to force a remount of the component. Otherwise spring is weird when the props order changes
   return (
     <div>
       <label> Total Distance: {(distance / 1000.0).toFixed(2)}km </label>
-      {props.waypoints.map((wp) => (
-        <div>
-          <label>
-            Waypoint: {wp.name} {wp.id()}
-          </label>
-        </div>
-      ))}
       <DraggableList
-        items={props.waypoints.map((wp) => `${wp.name}-${wp.id()}`)}
+        key={props.waypoints.map((wp) => `${wp.name}`).join("")}
+        items={props.waypoints.map((wp) => `${wp.name}`)}
         callback_order_change={props.callback_update_wp_order}
       />
     </div>

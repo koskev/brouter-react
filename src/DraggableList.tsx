@@ -39,22 +39,25 @@ export function DraggableList(props: DraggableListProps) {
   // XXX: somehow this is needed
   order.current = props.items.map((_, index) => index);
   const [springs, api] = useSprings(props.items.length, fn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
-  const bind = useDrag(({ args: [originalIndex], active, movement: [, y] }) => {
-    const curIndex = order.current.indexOf(originalIndex);
-    const curRow = clamp(
-      Math.round((curIndex * height + y) / height),
-      0,
-      props.items.length - 1,
-    );
-    const newOrder = swap(order.current, curIndex, curRow);
-    api.start(fn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
-    if (!active) {
-      if (order.current !== newOrder) {
-        props.callback_order_change(newOrder);
+  const bind = useDrag(
+    ({ args: [originalIndex], active, movement: [, y] }) => {
+      const curIndex = order.current.indexOf(originalIndex);
+      const curRow = clamp(
+        Math.round((curIndex * height + y) / height),
+        0,
+        props.items.length - 1,
+      );
+      const newOrder = swap(order.current, curIndex, curRow);
+      api.start(fn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
+      if (!active) {
+        order.current = newOrder;
+        if (order.current !== newOrder) {
+          props.callback_order_change(newOrder);
+        }
       }
-      order.current = newOrder;
-    }
-  }, {});
+    },
+    { preventDefault: true }, // Prevent default to prevent issue with text selecetion after drag
+  );
   return (
     <div
       className={styles.content}
@@ -73,7 +76,7 @@ export function DraggableList(props: DraggableListProps) {
             scale,
           }}
         >
-          {props.items[i]}
+          i: {i} {props.items[i]}
         </animated.div>
       ))}
     </div>
