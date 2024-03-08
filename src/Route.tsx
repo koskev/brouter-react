@@ -1,10 +1,10 @@
 import { GeoJsonObject } from "geojson";
 import { GeoJSON, Polyline, Popup, useMapEvents } from "react-leaflet";
-import { GeoRoute } from "./GeoSegment";
+import { GeoRoute, GeoRoutes } from "./GeoSegment";
 import { useMemo, useState } from "react";
 
 export interface RouteProperties {
-    data: GeoRoute;
+    data: GeoRoutes;
 }
 
 export function Route(props: RouteProperties) {

@@ -44,8 +44,103 @@ export class GeoSegment {
     }
 }
 
+export class GeoRoutes {
+    routes: GeoRoute[] = [];
+    waypoints: Waypoint[] = [];
+
+    clone(): GeoRoutes {
+        let new_obj = new GeoRoutes();
+        new_obj.routes = [...this.routes];
+        new_obj.waypoints = [...this.waypoints];
+        return new_obj;
+    }
+
+    async update_routes(waypoints: Waypoint[]): Promise<boolean> {
+        if (waypoints.length >= 2) {
+            for (let i = 1; i < waypoints.length; ++i) {
+                let start = waypoints[i - 1];
+                let end = waypoints[i];
+                const old_start = this.waypoints[i - 1];
+                const old_end = this.waypoints[i];
+                if (start === old_start && end === old_end) {
+                    // Don't update if we already have the route
+                    // TODO: consider different options
+                    continue;
+                }
+                let res = await fetch(
+                    `https://brouter.kokev.de/brouter?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=trekking&alternativeidx=0&format=geojson`,
+                );
+                if (res.ok) {
+                    let json = await res.json();
+                    let geo_route = new GeoRoute(json);
+                    this.routes[i - 1] = geo_route;
+                } else {
+                    // Error code
+                    let text = await res.text();
+                    console.error(
+                        `Failed to calculate route. Response: ${text}`,
+                    );
+                    return false;
+                }
+            }
+        }
+        this.waypoints = waypoints;
+        return false;
+    }
+
+    get_lang_lats(): LatLng[][] {
+        return this.routes.flatMap((route) => route.get_lang_lats());
+    }
+
+    get_distance(): number {
+        return this.routes.reduce(
+            (acc, route) => acc + route.get_distance(),
+            0,
+        );
+    }
+}
+
+export class Waypoint {
+    coords: LatLng = latLng(0, 0);
+    name: string = "waypoint";
+
+    static from_position(pos: Position): Waypoint {
+        let wp = new Waypoint();
+        wp.coords = latLng(pos[1], pos[0]);
+        return wp;
+    }
+
+    static from_latLng(pos: LatLng): Waypoint {
+        let wp = new Waypoint();
+        wp.coords = pos;
+        return wp;
+    }
+
+    latLng(): LatLng {
+        return this.coords;
+    }
+
+    lat(): number {
+        return this.coords.lat;
+    }
+
+    lng(): number {
+        return this.coords.lng;
+    }
+}
+
 export class GeoRoute {
     segments: GeoSegment[] = [];
+
+    get_start(): Position {
+        return this.segments[0].points[0];
+    }
+
+    get_end(): Position {
+        let end = this.segments.at(-1)?.points.at(-1);
+        let val = end ?? [0, 0, 0];
+        return val;
+    }
 
     get_distance(): number {
         return this.segments.reduce((acc: number, val: GeoSegment) => {
