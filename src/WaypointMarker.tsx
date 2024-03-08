@@ -12,7 +12,6 @@ export interface MarkerProperties {
 }
 
 export function WaypointMarker(props: MarkerProperties) {
-  // TODO: change any to actual type
   const markerRef = useRef<L.Marker>(null);
   const popupRef = useRef<L.Popup>(null);
 
