@@ -107,6 +107,7 @@ export class GeoRoutes {
 export class Waypoint {
     coords: LatLng = latLng(0, 0);
     name: string = "waypoint";
+    wp_id: number = 0;
 
     static from_position(pos: Position): Waypoint {
         let wp = new Waypoint();
@@ -130,6 +131,14 @@ export class Waypoint {
 
     lng(): number {
         return this.coords.lng;
+    }
+
+    id(): number {
+        return this.wp_id;
+    }
+
+    set_id(id: number) {
+        this.wp_id = id;
     }
 }
 

@@ -13,13 +13,17 @@ function App() {
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
 
   const callback_add_waypoint = (pos: Waypoint) => {
-    setWaypoints((prev) => [...prev, pos]);
+    setWaypoints((prev) => {
+      pos.set_id(prev.length);
+      return [...prev, pos];
+    });
   };
 
   const callback_set_waypoint = (idx: number, pos: Waypoint) => {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
       new_waypoints[idx] = pos;
+      new_waypoints[idx].set_id(idx);
       return new_waypoints;
     });
   };
@@ -28,6 +32,9 @@ function App() {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
       new_waypoints.splice(idx, 1);
+      for (let i = idx; i < new_waypoints.length; ++i) {
+        new_waypoints[idx].set_id(idx);
+      }
       return new_waypoints;
     });
   }, []);
