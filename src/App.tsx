@@ -50,6 +50,20 @@ function App() {
     });
   }, []);
 
+  const callback_hover_waypoint = (index: number, active: boolean) => {
+    if (active) {
+      setWaypoints((prev) => {
+        prev[index].highlight = true;
+        return [...prev];
+      });
+    } else {
+      setWaypoints((prev) => {
+        prev[index].highlight = false;
+        return [...prev];
+      });
+    }
+  };
+
   useEffect(() => {
     routeData
       .update_routes(waypoints)
@@ -62,6 +76,7 @@ function App() {
         waypoints={waypoints}
         route={routeData}
         callback_update_wp_order={callback_waypoint_order}
+        callback_hover_waypoint={callback_hover_waypoint}
       />
       <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
         <TileLayer

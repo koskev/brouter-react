@@ -35,7 +35,7 @@ export function WaypointMarker(props: MarkerProperties) {
     }
   };
 
-  const color = "fe4848";
+  const color = props.position.highlight ? "0000ff" : "fe4848";
   // from https://github.com/tomickigrzegorz/react-leaflet-examples/blob/main/src/pages/svg-markers-width-legends.js MIT
   const svgTemplate = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="marker">

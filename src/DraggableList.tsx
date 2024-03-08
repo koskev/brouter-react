@@ -2,7 +2,7 @@
 // MIT-License
 
 import { useSprings, animated } from "@react-spring/web";
-import { useDrag } from "react-use-gesture";
+import { useDrag, useHover } from "react-use-gesture";
 import clamp from "lodash.clamp";
 import swap from "lodash-move";
 
@@ -32,6 +32,7 @@ const fn =
 export interface DraggableListProps {
   items: string[];
   callback_order_change: (new_order: number[]) => void;
+  callback_hover_waypoint: (index: number, active: boolean) => void;
 }
 
 export function DraggableList(props: DraggableListProps) {
@@ -58,6 +59,10 @@ export function DraggableList(props: DraggableListProps) {
     },
     { preventDefault: true }, // Prevent default to prevent issue with text selecetion after drag
   );
+  const hover_bind = useHover(({ args: [index], active }) => {
+    api.start(fn(order.current, active, index, index));
+    props.callback_hover_waypoint(index, active);
+  }, {});
   return (
     <div
       className={styles.content}
@@ -66,6 +71,7 @@ export function DraggableList(props: DraggableListProps) {
       {springs.map(({ zIndex, shadow, y, scale }, i) => (
         <animated.div
           {...bind(i)}
+          {...hover_bind(i)}
           key={i}
           style={{
             zIndex,

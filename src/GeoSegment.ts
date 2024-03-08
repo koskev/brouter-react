@@ -108,6 +108,7 @@ export class Waypoint {
     coords: LatLng = latLng(0, 0);
     name: string = "undefined";
     wp_number: number = 0;
+    highlight: boolean = false;
 
     static from_position(pos: Position, name: string): Waypoint {
         let wp = new Waypoint();

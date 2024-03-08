@@ -5,6 +5,7 @@ export interface SidebarProperties {
   waypoints: Waypoint[];
   route: GeoRoutes;
   callback_update_wp_order: (order: number[]) => void;
+  callback_hover_waypoint: (index: number, active: boolean) => void;
 }
 
 export function Sidebar(props: SidebarProperties) {
@@ -20,6 +21,7 @@ export function Sidebar(props: SidebarProperties) {
         key={key}
         items={props.waypoints.map((wp) => `${wp.name}`)}
         callback_order_change={props.callback_update_wp_order}
+        callback_hover_waypoint={props.callback_hover_waypoint}
       />
     </div>
   );
