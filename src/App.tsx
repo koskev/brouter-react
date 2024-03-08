@@ -22,7 +22,8 @@ function App() {
   const callback_waypoint_pos = (idx: number, pos: LatLng) => {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
-      new_waypoints[idx] = Waypoint.from_latLng(pos, "new");
+      // XXX: just changing the coords won't work
+      new_waypoints[idx] = Waypoint.from_latLng(pos, new_waypoints[idx].name);
       new_waypoints[idx].set_number(idx);
       return new_waypoints;
     });
