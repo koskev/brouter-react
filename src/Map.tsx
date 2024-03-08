@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NewMarkerDialog } from "./NewMarkerDialog";
 import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
+import { LatLng } from "leaflet";
 
 export interface MapProperties {
   waypoints: Waypoint[];
@@ -17,7 +18,7 @@ export interface MapProperties {
 
 export function Map(props: MapProperties) {
   const map = useMap();
-  const [newMarkerPos, setNewMarkerPos] = useState<Waypoint | undefined>(
+  const [newMarkerPos, setNewMarkerPos] = useState<LatLng | undefined>(
     undefined,
   );
 
@@ -26,7 +27,7 @@ export function Map(props: MapProperties) {
 
     map.on("click", (e) => {
       let pos = e.latlng;
-      setNewMarkerPos(Waypoint.from_latLng(pos));
+      setNewMarkerPos(pos);
     });
     return () => {
       map.off("click");
