@@ -14,7 +14,7 @@ function App() {
 
   const callback_add_waypoint = (pos: Waypoint) => {
     setWaypoints((prev) => {
-      pos.set_id(prev.length);
+      pos.set_number(prev.length);
       return [...prev, pos];
     });
   };
@@ -33,7 +33,7 @@ function App() {
       let new_waypoints = [...prev];
       new_waypoints.splice(idx, 1);
       for (let i = idx; i < new_waypoints.length; ++i) {
-        new_waypoints[i].set_id(i);
+        new_waypoints[i].set_number(i);
       }
       return new_waypoints;
     });
@@ -43,7 +43,7 @@ function App() {
     setWaypoints((prev) => {
       let new_waypoints = order.map((idx) => prev[idx]);
       for (let i = 0; i < new_waypoints.length; ++i) {
-        new_waypoints[i].set_id(i);
+        new_waypoints[i].set_number(i);
       }
       return new_waypoints;
     });
