@@ -9,6 +9,8 @@ import swap from "lodash-move";
 import styles from "./styles.module.css";
 import { useRef } from "react";
 import { Form, InputGroup } from "react-bootstrap";
+import { Waypoint } from "./GeoSegment";
+import { callback_waypoint_set } from "./utils/callbacks";
 
 const height = 50;
 const fn =
@@ -31,9 +33,10 @@ const fn =
         };
 
 export interface DraggableListProps {
-  items: string[];
+  items: Waypoint[];
   callback_order_change: (new_order: number[]) => void;
   callback_hover_waypoint: (index: number, active: boolean) => void;
+  callback_waypoint_set: (index: number, waypoint: Waypoint) => void;
 }
 
 export function DraggableList(props: DraggableListProps) {
@@ -64,6 +67,7 @@ export function DraggableList(props: DraggableListProps) {
     api.start(fn(order.current, active, index, index));
     props.callback_hover_waypoint(index, active);
   }, {});
+
   return (
     <div
       className={styles.content}
@@ -83,16 +87,38 @@ export function DraggableList(props: DraggableListProps) {
             scale,
           }}
         >
-          <InputGroup className="mb-3">
-            <InputGroup.Text id="basic-addon1"> {i} </InputGroup.Text>
-            <Form.Control
-              placeholder="Waypoint name"
-              defaultValue={props.items[i]}
-              aria-describedby="basic-addon1"
-            />
-          </InputGroup>
+          <DraggableEntry
+            waypoint={props.items[i]}
+            callback_waypoint_set={props.callback_waypoint_set}
+          />
         </animated.div>
       ))}
     </div>
+  );
+}
+
+interface DraggableEntryProperties {
+  waypoint: Waypoint;
+  callback_waypoint_set: callback_waypoint_set;
+}
+
+function DraggableEntry(props: DraggableEntryProperties) {
+  const handle_change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let wp = props.waypoint;
+    wp.name = e.target.value;
+    props.callback_waypoint_set(wp.get_number(), wp);
+  };
+  return (
+    <InputGroup className="mb-3">
+      <InputGroup.Text id="basic-addon1">
+        {props.waypoint.get_number()}
+      </InputGroup.Text>
+      <Form.Control
+        placeholder="Waypoint name"
+        value={props.waypoint.name}
+        aria-describedby="basic-addon1"
+        onChange={handle_change}
+      />
+    </InputGroup>
   );
 }

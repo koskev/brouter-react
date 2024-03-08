@@ -29,6 +29,15 @@ function App() {
     });
   };
 
+  const callback_waypoint_set = useCallback((idx: number, wp: Waypoint) => {
+    setWaypoints((prev) => {
+      // just in case
+      wp.set_number(idx);
+      prev[idx] = wp;
+      return [...prev];
+    });
+  }, []);
+
   const callback_remove_waypoint = useCallback((idx: number) => {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
@@ -77,6 +86,7 @@ function App() {
         route={routeData}
         callback_update_wp_order={callback_waypoint_order}
         callback_hover_waypoint={callback_hover_waypoint}
+        callback_waypoint_set={callback_waypoint_set}
       />
       <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
         <TileLayer
