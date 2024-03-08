@@ -1,7 +1,7 @@
 import { ScaleControl, TileLayer } from "react-leaflet";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
-import { latLng } from "leaflet";
+import { LatLng, latLng } from "leaflet";
 import { useCallback, useEffect, useState } from "react";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
@@ -19,10 +19,10 @@ function App() {
     });
   };
 
-  const callback_set_waypoint = (idx: number, pos: Waypoint) => {
+  const callback_waypoint_pos = (idx: number, pos: LatLng) => {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
-      new_waypoints[idx] = pos;
+      new_waypoints[idx] = Waypoint.from_latLng(pos, "new");
       new_waypoints[idx].set_number(idx);
       return new_waypoints;
     });
@@ -71,7 +71,7 @@ function App() {
           waypoints={waypoints}
           route_data={routeData}
           callback_add_waypoint={callback_add_waypoint}
-          callback_set_waypoint={callback_set_waypoint}
+          callback_waypoint_pos={callback_waypoint_pos}
           callback_delete_waypoint={callback_remove_waypoint}
         />
         <ScaleControl imperial={false} />

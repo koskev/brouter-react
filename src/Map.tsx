@@ -12,7 +12,7 @@ export interface MapProperties {
 
   // callbacks
   callback_add_waypoint: (pos: Waypoint) => void;
-  callback_set_waypoint: (idx: number, pos: Waypoint) => void;
+  callback_waypoint_pos: (idx: number, pos: LatLng) => void;
   callback_delete_waypoint: (idx: number) => void;
 }
 
@@ -50,7 +50,7 @@ export function Map(props: MapProperties) {
           <WaypointMarker
             index={idx}
             position={waypoint}
-            callback_waypoint_pos={props.callback_set_waypoint}
+            callback_waypoint_pos={props.callback_waypoint_pos}
             remove_callback={props.callback_delete_waypoint}
           />
         );
