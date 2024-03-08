@@ -57,6 +57,8 @@ export class GeoRoutes {
 
     async update_routes(waypoints: Waypoint[]): Promise<boolean> {
         if (waypoints.length >= 2) {
+            // Consider removed waypoints. We can only have wp - 1 routes
+            this.routes = this.routes.slice(0, waypoints.length - 1);
             for (let i = 1; i < waypoints.length; ++i) {
                 let start = waypoints[i - 1];
                 let end = waypoints[i];
@@ -83,6 +85,8 @@ export class GeoRoutes {
                     return false;
                 }
             }
+        } else {
+            this.routes = [];
         }
         this.waypoints = waypoints;
         return false;

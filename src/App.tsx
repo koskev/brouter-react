@@ -33,11 +33,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (waypoints.length >= 2) {
-      routeData
-        .update_routes(waypoints)
-        .then((_) => setRouteData(routeData.clone()));
-    }
+    routeData
+      .update_routes(waypoints)
+      .then((_) => setRouteData(routeData.clone()));
   }, [waypoints]);
 
   return (
