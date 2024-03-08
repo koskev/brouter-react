@@ -23,7 +23,7 @@ function App() {
     setWaypoints((prev) => {
       let new_waypoints = [...prev];
       new_waypoints[idx] = pos;
-      new_waypoints[idx].set_id(idx);
+      new_waypoints[idx].set_number(idx);
       return new_waypoints;
     });
   };

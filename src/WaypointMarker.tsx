@@ -22,7 +22,7 @@ export function WaypointMarker(props: MarkerProperties) {
         if (marker !== null) {
           props.position_changed_callback(
             props.index,
-            Waypoint.from_latLng(marker.getLatLng()),
+            Waypoint.from_latLng(marker.getLatLng(), "new"),
           );
         }
       },
