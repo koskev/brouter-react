@@ -6,7 +6,8 @@ import L from "leaflet";
 export interface MarkerProperties {
   position: Waypoint;
   index: number;
-  position_changed_callback: (index: number, new_pos: Waypoint) => void;
+
+  callback_waypoint_pos: (index: number, new_pos: Waypoint) => void;
   remove_callback: (index: number) => void;
 }
 
@@ -20,7 +21,7 @@ export function WaypointMarker(props: MarkerProperties) {
       dragend() {
         const marker = markerRef.current;
         if (marker !== null) {
-          props.position_changed_callback(
+          props.callback_waypoint_pos(
             props.index,
             Waypoint.from_latLng(marker.getLatLng(), "new"),
           );

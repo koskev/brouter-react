@@ -50,7 +50,7 @@ export function Map(props: MapProperties) {
           <WaypointMarker
             index={idx}
             position={waypoint}
-            position_changed_callback={props.callback_set_waypoint}
+            callback_waypoint_pos={props.callback_set_waypoint}
             remove_callback={props.callback_delete_waypoint}
           />
         );
