@@ -49,7 +49,7 @@ export function WaypointMarker(props: MarkerProperties) {
     html: svgTemplate,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
-    popupAnchor: [7, -16],
+    popupAnchor: [0, -40],
   });
 
   return (
@@ -62,9 +62,8 @@ export function WaypointMarker(props: MarkerProperties) {
     >
       <Popup ref={popupRef}>
         <button onClick={handle_remove_button}> Remove Waypoint </button>
-        <label>
-          Lat: {props.position.lat()} Lng: {props.position.lng()}
-        </label>
+        <div>Lat: {props.position.lat()}</div>
+        <div> Lng: {props.position.lng()}</div>
       </Popup>
     </Marker>
   );
