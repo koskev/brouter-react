@@ -5,15 +5,14 @@ import { NewMarkerDialog } from "./NewMarkerDialog";
 import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
 import { LatLng } from "leaflet";
+import { callbacks_waypoint } from "./utils/callbacks";
 
 export interface MapProperties {
   waypoints: Waypoint[];
   route_data: GeoRoutes;
 
   // callbacks
-  callback_add_waypoint: (pos: Waypoint) => void;
-  callback_waypoint_pos: (idx: number, pos: LatLng) => void;
-  callback_delete_waypoint: (idx: number) => void;
+  callbacks_waypoint: callbacks_waypoint;
 }
 
 export function Map(props: MapProperties) {
@@ -39,7 +38,7 @@ export function Map(props: MapProperties) {
       {newMarkerPos ? (
         <NewMarkerDialog
           position={newMarkerPos}
-          confirm_callback={props.callback_add_waypoint}
+          confirm_callback={props.callbacks_waypoint.add}
         />
       ) : (
         <></>
@@ -50,8 +49,7 @@ export function Map(props: MapProperties) {
           <WaypointMarker
             index={idx}
             position={waypoint}
-            callback_waypoint_pos={props.callback_waypoint_pos}
-            remove_callback={props.callback_delete_waypoint}
+            callbacks_waypoint={props.callbacks_waypoint}
           />
         );
       })}

@@ -1,14 +1,12 @@
 import { DraggableList } from "./DraggableList";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
-import { callback_waypoint_set } from "./utils/callbacks";
+import { callbacks_waypoint } from "./utils/callbacks";
 
 export interface SidebarProperties {
   waypoints: Waypoint[];
   route: GeoRoutes;
 
-  callback_update_wp_order: (order: number[]) => void;
-  callback_hover_waypoint: (index: number, active: boolean) => void;
-  callback_waypoint_set: callback_waypoint_set;
+  callbacks_waypoint: callbacks_waypoint;
 }
 
 export function Sidebar(props: SidebarProperties) {
@@ -23,9 +21,7 @@ export function Sidebar(props: SidebarProperties) {
       <DraggableList
         key={key}
         items={props.waypoints}
-        callback_order_change={props.callback_update_wp_order}
-        callback_hover_waypoint={props.callback_hover_waypoint}
-        callback_waypoint_set={props.callback_waypoint_set}
+        callbacks_waypoint={props.callbacks_waypoint}
       />
     </div>
   );

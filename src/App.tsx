@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
+import { callbacks_waypoint } from "./utils/callbacks";
 
 function App() {
   const position = latLng(53.6, 10);
@@ -73,6 +74,15 @@ function App() {
     }
   };
 
+  const callbacks_waypoint: callbacks_waypoint = {
+    set: callback_waypoint_set,
+    delete: callback_remove_waypoint,
+    set_pos: callback_waypoint_pos,
+    add: callback_add_waypoint,
+    hover: callback_hover_waypoint,
+    change_order: callback_waypoint_order,
+  };
+
   useEffect(() => {
     routeData
       .update_routes(waypoints)
@@ -84,9 +94,7 @@ function App() {
       <Sidebar
         waypoints={waypoints}
         route={routeData}
-        callback_update_wp_order={callback_waypoint_order}
-        callback_hover_waypoint={callback_hover_waypoint}
-        callback_waypoint_set={callback_waypoint_set}
+        callbacks_waypoint={callbacks_waypoint}
       />
       <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
         <TileLayer
@@ -96,9 +104,7 @@ function App() {
         <Map
           waypoints={waypoints}
           route_data={routeData}
-          callback_add_waypoint={callback_add_waypoint}
-          callback_waypoint_pos={callback_waypoint_pos}
-          callback_delete_waypoint={callback_remove_waypoint}
+          callbacks_waypoint={callbacks_waypoint}
         />
         <ScaleControl imperial={false} />
       </MapContainer>

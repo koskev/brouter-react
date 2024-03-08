@@ -2,13 +2,13 @@ import { useMemo, useRef } from "react";
 import { Waypoint } from "./GeoSegment";
 import { Marker, Popup } from "react-leaflet";
 import L, { LatLng } from "leaflet";
+import { callbacks_waypoint } from "./utils/callbacks";
 
 export interface MarkerProperties {
   position: Waypoint;
   index: number;
 
-  callback_waypoint_pos: (index: number, new_pos: LatLng) => void;
-  remove_callback: (index: number) => void;
+  callbacks_waypoint: callbacks_waypoint;
 }
 
 export function WaypointMarker(props: MarkerProperties) {
@@ -20,7 +20,7 @@ export function WaypointMarker(props: MarkerProperties) {
       dragend() {
         const marker = markerRef.current;
         if (marker !== null) {
-          props.callback_waypoint_pos(props.index, marker.getLatLng());
+          props.callbacks_waypoint.set_pos(props.index, marker.getLatLng());
         }
       },
     }),
@@ -28,7 +28,7 @@ export function WaypointMarker(props: MarkerProperties) {
   );
 
   const handle_remove_button = (_e: React.MouseEvent<HTMLButtonElement>) => {
-    props.remove_callback(props.index);
+    props.callbacks_waypoint.delete(props.index);
     if (popupRef.current !== null) {
       popupRef.current.close();
     }

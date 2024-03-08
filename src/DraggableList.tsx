@@ -10,7 +10,7 @@ import styles from "./styles.module.css";
 import { useRef } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { Waypoint } from "./GeoSegment";
-import { callback_waypoint_set } from "./utils/callbacks";
+import { callbacks_waypoint } from "./utils/callbacks";
 
 const height = 50;
 const fn =
@@ -34,9 +34,7 @@ const fn =
 
 export interface DraggableListProps {
   items: Waypoint[];
-  callback_order_change: (new_order: number[]) => void;
-  callback_hover_waypoint: (index: number, active: boolean) => void;
-  callback_waypoint_set: (index: number, waypoint: Waypoint) => void;
+  callbacks_waypoint: callbacks_waypoint;
 }
 
 export function DraggableList(props: DraggableListProps) {
@@ -56,7 +54,7 @@ export function DraggableList(props: DraggableListProps) {
       api.start(fn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
       if (!active) {
         if (order.current !== newOrder) {
-          props.callback_order_change(newOrder);
+          props.callbacks_waypoint.change_order(newOrder);
         }
         order.current = newOrder;
       }
@@ -65,7 +63,7 @@ export function DraggableList(props: DraggableListProps) {
   );
   const hover_bind = useHover(({ args: [index], active }) => {
     api.start(fn(order.current, active, index, index));
-    props.callback_hover_waypoint(index, active);
+    props.callbacks_waypoint.hover(index, active);
   }, {});
 
   return (
@@ -89,7 +87,7 @@ export function DraggableList(props: DraggableListProps) {
         >
           <DraggableEntry
             waypoint={props.items[i]}
-            callback_waypoint_set={props.callback_waypoint_set}
+            callbacks_waypoint={props.callbacks_waypoint}
           />
         </animated.div>
       ))}
@@ -99,14 +97,14 @@ export function DraggableList(props: DraggableListProps) {
 
 interface DraggableEntryProperties {
   waypoint: Waypoint;
-  callback_waypoint_set: callback_waypoint_set;
+  callbacks_waypoint: callbacks_waypoint;
 }
 
 function DraggableEntry(props: DraggableEntryProperties) {
   const handle_change = (e: React.ChangeEvent<HTMLInputElement>) => {
     let wp = props.waypoint;
     wp.name = e.target.value;
-    props.callback_waypoint_set(wp.get_number(), wp);
+    props.callbacks_waypoint.set(wp.get_number(), wp);
   };
   return (
     <InputGroup className="mb-3">
