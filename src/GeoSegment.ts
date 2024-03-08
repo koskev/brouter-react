@@ -109,14 +109,16 @@ export class Waypoint {
     name: string = "undefined";
     wp_number: number = 0;
 
-    static from_position(pos: Position): Waypoint {
+    static from_position(pos: Position, name: string): Waypoint {
         let wp = new Waypoint();
+        wp.name = name;
         wp.coords = latLng(pos[1], pos[0]);
         return wp;
     }
 
-    static from_latLng(pos: LatLng): Waypoint {
+    static from_latLng(pos: LatLng, name: string): Waypoint {
         let wp = new Waypoint();
+        wp.name = name;
         wp.coords = pos;
         return wp;
     }
