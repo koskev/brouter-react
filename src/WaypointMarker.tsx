@@ -11,8 +11,8 @@ export interface MarkerProperties {
 
 export function WaypointMarker(props: MarkerProperties) {
   // TODO: change any to actual type
-  const markerRef = useRef<any>(null);
-  const popupRef = useRef<any>(null);
+  const markerRef = useRef<L.Marker>(null);
+  const popupRef = useRef<L.Popup>(null);
 
   const markerEvents = useMemo(
     () => ({
@@ -32,7 +32,7 @@ export function WaypointMarker(props: MarkerProperties) {
   const handle_remove_button = (_e: React.MouseEvent<HTMLButtonElement>) => {
     props.remove_callback(props.index);
     if (popupRef.current !== null) {
-      popupRef.current._closeButton.click();
+      popupRef.current.close();
     }
   };
 

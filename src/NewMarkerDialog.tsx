@@ -8,12 +8,12 @@ export interface NewMarkerDialogProperties {
 }
 
 export function NewMarkerDialog(props: NewMarkerDialogProperties) {
-  const popupRef = useRef<any>(null);
+  const popupRef = useRef<L.Popup>(null);
 
   const handle_button = (_event: React.MouseEvent<HTMLButtonElement>) => {
     props.confirm_callback(props.position);
     if (popupRef.current !== null) {
-      popupRef.current._closeButton.click();
+      popupRef.current.close();
     }
   };
 
