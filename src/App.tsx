@@ -5,6 +5,7 @@ import { latLng } from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Route } from "./Route";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
+import { Sidebar } from "./Sidebar";
 
 interface NewMarkerDialogProperties {
   position: Waypoint;
@@ -128,26 +129,6 @@ function Map(props: MapProperties) {
           />
         );
       })}
-    </div>
-  );
-}
-
-interface SidebarProperties {
-  waypoints: Waypoint[];
-  route: GeoRoutes;
-}
-
-function Sidebar(props: SidebarProperties) {
-  // NEED unwrap_or....
-  const distance = props.route ? props.route.get_distance() : 0;
-  return (
-    <div>
-      <label> Total Distance: {distance} </label>
-      {props.waypoints.map((wp) => (
-        <div>
-          <label> Waypoint: {wp.name} </label>
-        </div>
-      ))}
     </div>
   );
 }
