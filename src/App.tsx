@@ -33,7 +33,17 @@ function App() {
       let new_waypoints = [...prev];
       new_waypoints.splice(idx, 1);
       for (let i = idx; i < new_waypoints.length; ++i) {
-        new_waypoints[idx].set_id(idx);
+        new_waypoints[i].set_id(i);
+      }
+      return new_waypoints;
+    });
+  }, []);
+
+  const callback_waypoint_order = useCallback((order: number[]) => {
+    setWaypoints((prev) => {
+      let new_waypoints = order.map((idx) => prev[idx]);
+      for (let i = 0; i < new_waypoints.length; ++i) {
+        new_waypoints[i].set_id(i);
       }
       return new_waypoints;
     });
@@ -46,7 +56,12 @@ function App() {
   }, [waypoints]);
 
   return (
-    <div>
+    <div className="main">
+      <Sidebar
+        waypoints={waypoints}
+        route={routeData}
+        callback_update_wp_order={callback_waypoint_order}
+      />
       <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -61,7 +76,6 @@ function App() {
         />
         <ScaleControl imperial={false} />
       </MapContainer>
-      <Sidebar waypoints={waypoints} route={routeData} />
     </div>
   );
 }
