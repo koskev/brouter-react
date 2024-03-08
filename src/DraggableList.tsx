@@ -8,6 +8,7 @@ import swap from "lodash-move";
 
 import styles from "./styles.module.css";
 import { useRef } from "react";
+import { Form, InputGroup } from "react-bootstrap";
 
 const height = 50;
 const fn =
@@ -82,7 +83,14 @@ export function DraggableList(props: DraggableListProps) {
             scale,
           }}
         >
-          i: {i} {props.items[i]}
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1"> {i} </InputGroup.Text>
+            <Form.Control
+              placeholder="Waypoint name"
+              defaultValue={props.items[i]}
+              aria-describedby="basic-addon1"
+            />
+          </InputGroup>
         </animated.div>
       ))}
     </div>
