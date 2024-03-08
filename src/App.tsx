@@ -1,4 +1,4 @@
-import { TileLayer } from "react-leaflet";
+import { ScaleControl, TileLayer } from "react-leaflet";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { latLng } from "leaflet";
@@ -52,6 +52,7 @@ function App() {
           callback_set_waypoint={callback_set_waypoint}
           callback_delete_waypoint={callback_remove_waypoint}
         />
+        <ScaleControl imperial={false} />
       </MapContainer>
       <Sidebar waypoints={waypoints} route={routeData} />
     </div>
