@@ -62,6 +62,10 @@ export function WaypointMarker(props: MarkerProperties) {
     popupAnchor: [0, -50],
   });
 
+  if (props.position.highlight) {
+    icon.options.className = "foreground";
+  }
+
   return (
     <Marker
       position={props.position.latLng()}

@@ -57,3 +57,8 @@
 .marker_paths > * {
   fill: var(--fill-color) !important;
 }
+
+.foreground {
+  z-index: 999999 !important;
+
+}
