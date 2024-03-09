@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="50"
+   height="48.759052"
+   viewBox="0 0 13.229166 12.900832"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   sodipodi:docname="marker.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="5.6568543"
+     inkscape:cx="-4.8613591"
+     inkscape:cy="24.306795"
+     inkscape:window-width="1916"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-0.09563433,-0.04759772)">
+    <g
+       id="marker_paths"
+       class="marker_paths"
+       inkscape:label="Marker"
+       transform="matrix(0.70502931,0,0,0.70502931,-3.4653827,-1.732756)"
+       style="display:inline">
+      <path
+         id="path3-53"
+         style="display:inline;opacity:0.3;fill:#000000;stroke-width:0.249034;stroke-linejoin:round;stroke-dashoffset:9.6"
+         inkscape:label="Shadow"
+         d="m 22.430761,15.470134 c -1.913979,2.013935 -12.026943,5.352432 -12.026943,5.352432 0,0 2.819865,-10.26963 4.733842,-12.2835638 1.913979,-2.0139338 5.098182,-2.0949618 7.112116,-0.1809838 2.013933,1.9139796 2.094963,5.0981826 0.180985,7.1121156 z"
+         sodipodi:nodetypes="scsss"
+         sodipodi:insensitive="true" />
+      <path
+         id="path3"
+         style="display:inline;opacity:1;fill:#000000;stroke-width:0.264999;stroke-linejoin:round;stroke-dashoffset:9.6"
+         inkscape:label="Base Circle Path"
+         d="m 15.757197,7.8785982 c 0,2.9564688 -5.353197,12.9449138 -5.353197,12.9449138 0,0 -5.3531222,-9.988446 -5.353122,-12.9449138 0,-2.9564681 2.3966909,-5.3531592 5.353159,-5.3531594 2.956469,-3e-7 5.35316,2.3966909 5.35316,5.3531594 z"
+         sodipodi:nodetypes="scsss"
+         sodipodi:insensitive="true" />
+      <circle
+         style="display:inline;opacity:1;fill:#000000;stroke-width:0.264999;stroke-linejoin:round;stroke-dashoffset:9.6"
+         id="path3-5-2"
+         cx="10.404037"
+         cy="7.8783789"
+         inkscape:label="Base Circle"
+         r="5.3531594"
+         sodipodi:insensitive="true" />
+    </g>
+    <circle
+       style="display:inline;opacity:1;fill:#ffffff;stroke-width:0.12739;stroke-linejoin:round;stroke-dashoffset:9.6"
+       id="path3-5"
+       cx="3.8697686"
+       cy="3.8217318"
+       inkscape:label="Hole"
+       r="2.5733497" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.73079px;line-height:125%;font-family:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.186539px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="3.7887044"
+       y="5.1797881"
+       id="text3"
+       inkscape:label="Marker Text"><tspan
+         sodipodi:role="line"
+         class="marker_text"
+         id="marker_text"
+         style="text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.186539px"
+         x="3.7887044"
+         y="5.1797881">10</tspan></text>
+  </g>
+</svg>

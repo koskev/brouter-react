@@ -52,3 +52,8 @@
   display: flex;
   gap: 100px;
 }
+
+
+.marker_paths > * {
+  fill: var(--fill-color) !important;
+}
