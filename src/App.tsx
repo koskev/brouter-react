@@ -2,7 +2,7 @@ import { ScaleControl, TileLayer } from "react-leaflet";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { LatLng, latLng } from "leaflet";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
@@ -19,11 +19,18 @@ export function MyRouter() {
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const position = latLng(
-    parseFloat(searchParams.get("lat") ?? "53.6"),
-    parseFloat(searchParams.get("lng") ?? "10"),
+  const initial_position = useMemo(
+    () =>
+      latLng(
+        parseFloat(searchParams.get("lat") ?? "53.6"),
+        parseFloat(searchParams.get("lng") ?? "10"),
+      ),
+    [],
   );
-  const zoom = parseFloat(searchParams.get("zoom") ?? "13");
+  const initial_zoom = useMemo(
+    () => parseFloat(searchParams.get("zoom") ?? "13"),
+    [],
+  );
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
 
@@ -119,7 +126,11 @@ function App() {
         route={routeData}
         callbacks_waypoint={callbacks_waypoint}
       />
-      <MapContainer center={position} zoom={zoom} scrollWheelZoom={true}>
+      <MapContainer
+        center={initial_position}
+        zoom={initial_zoom}
+        scrollWheelZoom={true}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
