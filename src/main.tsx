@@ -4,6 +4,7 @@ import { MyRouter } from "./App.tsx";
 import "./index.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import "leaflet/dist/leaflet.css";
 import "leaflet.photon/leaflet.photon.css";
 import "leaflet.photon/leaflet.photon.js";
 import { BrowserRouter } from "react-router-dom";
