@@ -31,8 +31,25 @@ function App() {
     () => parseFloat(searchParams.get("zoom") ?? "13"),
     [],
   );
-  const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
+
+  const initial_waypoints = useMemo(() => {
+    let wps_str = searchParams.get("waypoints") ?? "[]";
+    let wps_proto: Waypoint[] = JSON.parse(wps_str);
+    let wps = wps_proto.map((wp_proto) =>
+      Object.assign(new Waypoint(), wp_proto),
+    );
+    return wps;
+  }, []);
+
+  const [waypoints, setWaypoints] = useState<Waypoint[]>(initial_waypoints);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      prev.set("waypoints", JSON.stringify(waypoints));
+      return prev;
+    });
+  }, [waypoints]);
 
   const callback_map_pos = (pos: LatLng, zoom: number) => {
     setSearchParams((prev) => {
