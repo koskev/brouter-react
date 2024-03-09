@@ -57,9 +57,9 @@ export function WaypointMarker(props: MarkerProperties) {
   let icon = new L.DivIcon({
     className: "test",
     html: svg_html,
-    iconSize: [20, 70],
-    iconAnchor: [20, 70],
-    popupAnchor: [0, -40],
+    iconSize: [50, 50],
+    iconAnchor: [15, 50],
+    popupAnchor: [0, -50],
   });
 
   return (
