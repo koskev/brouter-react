@@ -1,14 +1,14 @@
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 WORKDIR /build
 
 # Copy this first to allow for caching
-COPY package.json package-lock.json ./
+COPY package.json yarn.lock ./
 
-RUN npm install
+RUN yarn install
 
 COPY . .
-RUN npm run build
+RUN yarn build
 
 
 
