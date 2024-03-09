@@ -7,11 +7,34 @@ import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
 import { callbacks_waypoint } from "./utils/callbacks";
+import { Routes, Route, useSearchParams } from "react-router-dom";
+
+export function MyRouter() {
+  return (
+    <Routes>
+      <Route path="*" element={<App />} />
+    </Routes>
+  );
+}
 
 function App() {
-  const position = latLng(53.6, 10);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const position = latLng(
+    parseFloat(searchParams.get("lat") ?? "53.6"),
+    parseFloat(searchParams.get("lng") ?? "10"),
+  );
+  const zoom = parseFloat(searchParams.get("zoom") ?? "13");
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
+
+  const callback_map_pos = (pos: LatLng, zoom: number) => {
+    setSearchParams((prev) => {
+      prev.set("lat", `${pos.lat}`);
+      prev.set("lng", `${pos.lng}`);
+      prev.set("zoom", `${zoom}`);
+      return prev;
+    });
+  };
 
   const callback_add_waypoint = (pos: Waypoint) => {
     setWaypoints((prev) => {
@@ -96,7 +119,7 @@ function App() {
         route={routeData}
         callbacks_waypoint={callbacks_waypoint}
       />
-      <MapContainer center={position} zoom={13} scrollWheelZoom={true}>
+      <MapContainer center={position} zoom={zoom} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -105,11 +128,10 @@ function App() {
           waypoints={waypoints}
           route_data={routeData}
           callbacks_waypoint={callbacks_waypoint}
+          callback_map_pos={callback_map_pos}
         />
         <ScaleControl imperial={false} />
       </MapContainer>
     </div>
   );
 }
-
-export default App;

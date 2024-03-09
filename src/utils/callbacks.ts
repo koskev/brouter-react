@@ -1,6 +1,8 @@
 import { LatLng } from "leaflet";
 import { Waypoint } from "../GeoSegment";
 
+export type callback_map_pos = (pos: LatLng, zoom: number) => void;
+
 export interface callbacks_waypoint {
   add: (pos: Waypoint) => void;
   set_pos: (idx: number, pos: LatLng) => void;

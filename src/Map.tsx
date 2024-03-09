@@ -5,7 +5,7 @@ import { NewMarkerDialog } from "./NewMarkerDialog";
 import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
 import L, { LatLng } from "leaflet";
-import { callbacks_waypoint } from "./utils/callbacks";
+import { callbacks_waypoint, callback_map_pos } from "./utils/callbacks";
 
 export interface MapProperties {
   waypoints: Waypoint[];
@@ -13,6 +13,7 @@ export interface MapProperties {
 
   // callbacks
   callbacks_waypoint: callbacks_waypoint;
+  callback_map_pos: callback_map_pos;
 }
 
 export function Map(props: MapProperties) {
@@ -27,6 +28,10 @@ export function Map(props: MapProperties) {
     map.on("click", (e) => {
       let pos = e.latlng;
       setNewMarkerPos(pos);
+    });
+
+    map.on("moveend zoomend", (_e) => {
+      props.callback_map_pos(map.getCenter(), map.getZoom());
     });
 
     const result_handler = (e: any) => {
@@ -49,7 +54,7 @@ export function Map(props: MapProperties) {
     map.addControl(search);
 
     return () => {
-      map.off("click");
+      map.off("click moveend zoomed");
       map.removeControl(search);
     };
   }, []);
