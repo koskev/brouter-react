@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { Waypoint } from "./GeoSegment";
 import { Marker, Popup } from "react-leaflet";
-import L, { LatLng } from "leaflet";
+import L from "leaflet";
 import { callbacks_waypoint } from "./utils/callbacks";
 import marker_svg_string from "./marker.svg?raw";
 

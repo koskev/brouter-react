@@ -34,10 +34,6 @@ export function Map(props: MapProperties) {
       props.callback_map_pos(map.getCenter(), map.getZoom());
     });
 
-    const result_handler = (e: any) => {
-      console.log(e);
-    };
-
     // one of the few uses: https://github.com/stadtnavi/stadtnavi-widget/blob/7d3c76ff3678a2a64ce2b23a6a61a425966cec78/src/location-selector.js#L46
     // also has addr lookup. maybe another feature I want
     let photonControlOptions = {
