@@ -4,6 +4,8 @@ import App from "./App.tsx";
 import "./index.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import "leaflet.photon/leaflet.photon.css";
+import "leaflet.photon/leaflet.photon.js";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

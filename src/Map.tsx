@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { NewMarkerDialog } from "./NewMarkerDialog";
 import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
-import { LatLng } from "leaflet";
+import L, { LatLng } from "leaflet";
 import { callbacks_waypoint } from "./utils/callbacks";
 
 export interface MapProperties {
@@ -28,8 +28,29 @@ export function Map(props: MapProperties) {
       let pos = e.latlng;
       setNewMarkerPos(pos);
     });
+
+    const result_handler = (e: any) => {
+      console.log(e);
+    };
+
+    // one of the few uses: https://github.com/stadtnavi/stadtnavi-widget/blob/7d3c76ff3678a2a64ce2b23a6a61a425966cec78/src/location-selector.js#L46
+    // also has addr lookup. maybe another feature I want
+    let photonControlOptions = {
+      //resultsHandler: result_handler,
+      position: "topleft",
+      submitDelay: 200,
+      feedbackEmail: null,
+      lang: "de",
+      //onSelected: TODO
+      // formatResult: TODO?
+    };
+
+    let search = L.control.photon(photonControlOptions);
+    map.addControl(search);
+
     return () => {
       map.off("click");
+      map.removeControl(search);
     };
   }, []);
 
