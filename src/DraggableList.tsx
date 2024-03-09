@@ -102,7 +102,7 @@ interface DraggableEntryProperties {
 
 function DraggableEntry(props: DraggableEntryProperties) {
   const handle_change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let wp = props.waypoint;
+    const wp = props.waypoint;
     wp.name = e.target.value;
     props.callbacks_waypoint.set(wp.get_number(), wp);
   };

@@ -33,9 +33,9 @@ function App() {
   );
 
   const initial_waypoints = useMemo(() => {
-    let wps_str = searchParams.get("waypoints") ?? "[]";
-    let wps_proto: Waypoint[] = JSON.parse(wps_str);
-    let wps = wps_proto.map((wp_proto) =>
+    const wps_str = searchParams.get("waypoints") ?? "[]";
+    const wps_proto: Waypoint[] = JSON.parse(wps_str);
+    const wps = wps_proto.map((wp_proto) =>
       Object.assign(new Waypoint(), wp_proto),
     );
     return wps;
@@ -69,7 +69,7 @@ function App() {
 
   const callback_waypoint_pos = (idx: number, pos: LatLng) => {
     setWaypoints((prev) => {
-      let new_waypoints = [...prev];
+      const new_waypoints = [...prev];
       // XXX: just changing the coords won't work
       new_waypoints[idx] = Waypoint.from_latLng(pos, new_waypoints[idx].name);
       new_waypoints[idx].set_number(idx);
@@ -88,7 +88,7 @@ function App() {
 
   const callback_remove_waypoint = useCallback((idx: number) => {
     setWaypoints((prev) => {
-      let new_waypoints = [...prev];
+      const new_waypoints = [...prev];
       new_waypoints.splice(idx, 1);
       for (let i = idx; i < new_waypoints.length; ++i) {
         new_waypoints[i].set_number(i);
@@ -99,7 +99,7 @@ function App() {
 
   const callback_waypoint_order = useCallback((order: number[]) => {
     setWaypoints((prev) => {
-      let new_waypoints = order.map((idx) => prev[idx]);
+      const new_waypoints = order.map((idx) => prev[idx]);
       for (let i = 0; i < new_waypoints.length; ++i) {
         new_waypoints[i].set_number(i);
       }

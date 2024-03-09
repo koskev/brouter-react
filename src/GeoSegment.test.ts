@@ -8,8 +8,8 @@ import segment from "./segment.json";
 
 test("brouter parse", () => {
   expect(true).toBe(true);
-  let brouter_array = segment as GeoJsonObject;
-  let geo_route = new GeoRoute(brouter_array);
+  const brouter_array = segment as GeoJsonObject;
+  const geo_route = new GeoRoute(brouter_array);
   expect(geo_route.segments.length).toBe(2);
   expect(geo_route.segments[0].points.length).toBe(3);
   expect(geo_route.segments[0].elevation).toBe(15);

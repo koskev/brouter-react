@@ -37,24 +37,24 @@ export function WaypointMarker(props: MarkerProperties) {
 
   const color = props.position.highlight ? "#0000ff" : "#fe4848";
 
-  let svg_element = new DOMParser().parseFromString(
+  const svg_element = new DOMParser().parseFromString(
     marker_svg_string,
     "image/svg+xml",
   );
 
-  let text_element = svg_element.getElementById("marker_text");
+  const text_element = svg_element.getElementById("marker_text");
   if (text_element) {
     text_element.innerHTML = `${props.position.get_number() + 1}`;
   }
 
-  let svg_html = svg_element.activeElement as HTMLElement;
+  const svg_html = svg_element.activeElement as HTMLElement;
 
-  let marker_paths = svg_element.getElementById("marker_paths");
+  const marker_paths = svg_element.getElementById("marker_paths");
   if (marker_paths) {
     marker_paths.style.setProperty("--fill-color", color);
   }
 
-  let icon = new L.DivIcon({
+  const icon = new L.DivIcon({
     className: "test",
     html: svg_html,
     iconSize: [50, 50],

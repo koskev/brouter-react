@@ -12,7 +12,7 @@ export function NewMarkerDialog(props: NewMarkerDialogProperties) {
   const popupRef = useRef<L.Popup>(null);
 
   const handle_button = (_event: React.MouseEvent<HTMLButtonElement>) => {
-    let wp = Waypoint.from_latLng(props.position, "New Waypoint");
+    const wp = Waypoint.from_latLng(props.position, "New Waypoint");
     props.confirm_callback(wp);
     if (popupRef.current !== null) {
       popupRef.current.close();

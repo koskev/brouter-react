@@ -7,7 +7,7 @@ export interface RouteProperties {
 }
 
 export function Route(props: RouteProperties) {
-    let lines = props.data.get_lang_lats();
+    const lines = props.data.get_lang_lats();
 
     const [color, _setColor] = useState("blue");
 

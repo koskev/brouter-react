@@ -26,7 +26,7 @@ export function Map(props: MapProperties) {
     map.scrollWheelZoom.enable();
 
     map.on("click", (e) => {
-      let pos = e.latlng;
+      const pos = e.latlng;
       setNewMarkerPos(pos);
     });
 
@@ -36,7 +36,7 @@ export function Map(props: MapProperties) {
 
     // one of the few uses: https://github.com/stadtnavi/stadtnavi-widget/blob/7d3c76ff3678a2a64ce2b23a6a61a425966cec78/src/location-selector.js#L46
     // also has addr lookup. maybe another feature I want
-    let photonControlOptions = {
+    const photonControlOptions = {
       //resultsHandler: result_handler,
       position: "topleft",
       submitDelay: 200,
@@ -46,7 +46,7 @@ export function Map(props: MapProperties) {
       // formatResult: TODO?
     };
 
-    let search = L.control.photon(photonControlOptions);
+    const search = L.control.photon(photonControlOptions);
     map.addControl(search);
 
     return () => {

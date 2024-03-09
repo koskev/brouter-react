@@ -18,10 +18,10 @@ export class GeoSegment {
         if (remaining_points.length == 0) {
             console.error("Got zero remaining points!");
         }
-        let segment = new GeoSegment();
+        const segment = new GeoSegment();
 
-        let long = parseInt(array[1]) / 1e6;
-        let lat = parseInt(array[0]) / 1e6;
+        const long = parseInt(array[1]) / 1e6;
+        const lat = parseInt(array[0]) / 1e6;
         // remove elements until we have a match
         while (remaining_points.length > 0) {
             // no match
@@ -29,7 +29,7 @@ export class GeoSegment {
                 remaining_points[0][0] !== lat &&
                 remaining_points[0][1] !== long
             ) {
-                let removed_element = remaining_points.splice(0, 1);
+                const removed_element = remaining_points.splice(0, 1);
                 segment.points.push(removed_element[0]);
             } else {
                 // add last point on match but don't remove it
@@ -49,7 +49,7 @@ export class GeoRoutes {
     waypoints: Waypoint[] = [];
 
     clone(): GeoRoutes {
-        let new_obj = new GeoRoutes();
+        const new_obj = new GeoRoutes();
         new_obj.routes = [...this.routes];
         new_obj.waypoints = [...this.waypoints];
         return new_obj;
@@ -60,8 +60,8 @@ export class GeoRoutes {
             // Consider removed waypoints. We can only have wp - 1 routes
             this.routes = this.routes.slice(0, waypoints.length - 1);
             for (let i = 1; i < waypoints.length; ++i) {
-                let start = waypoints[i - 1];
-                let end = waypoints[i];
+                const start = waypoints[i - 1];
+                const end = waypoints[i];
                 const old_start = this.waypoints[i - 1];
                 const old_end = this.waypoints[i];
                 if (start === old_start && end === old_end) {
@@ -69,16 +69,16 @@ export class GeoRoutes {
                     // TODO: consider different options
                     continue;
                 }
-                let res = await fetch(
+                const res = await fetch(
                     `https://brouter.kokev.de/brouter?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=trekking&alternativeidx=0&format=geojson`,
                 );
                 if (res.ok) {
-                    let json = await res.json();
-                    let geo_route = new GeoRoute(json);
+                    const json = await res.json();
+                    const geo_route = new GeoRoute(json);
                     this.routes[i - 1] = geo_route;
                 } else {
                     // Error code
-                    let text = await res.text();
+                    const text = await res.text();
                     console.error(
                         `Failed to calculate route. Response: ${text}`,
                     );
@@ -111,14 +111,14 @@ export class Waypoint {
     highlight: boolean = false;
 
     static from_position(pos: Position, name: string): Waypoint {
-        let wp = new Waypoint();
+        const wp = new Waypoint();
         wp.name = name;
         wp.coords = latLng(pos[1], pos[0]);
         return wp;
     }
 
     static from_latLng(pos: LatLng, name: string): Waypoint {
-        let wp = new Waypoint();
+        const wp = new Waypoint();
         wp.name = name;
         wp.coords = pos;
         return wp;
@@ -153,8 +153,8 @@ export class GeoRoute {
     }
 
     get_end(): Position {
-        let end = this.segments.at(-1)?.points.at(-1);
-        let val = end ?? [0, 0, 0];
+        const end = this.segments.at(-1)?.points.at(-1);
+        const val = end ?? [0, 0, 0];
         return val;
     }
 
@@ -172,20 +172,20 @@ export class GeoRoute {
 
     constructor(geo: GeoJsonObject | undefined) {
         if (geo && geo.type === "FeatureCollection") {
-            let collection = geo as FeatureCollection;
-            for (let feature of collection.features) {
+            const collection = geo as FeatureCollection;
+            for (const feature of collection.features) {
                 if (
                     feature.properties?.messages &&
                     feature.geometry.type === "LineString"
                 ) {
-                    let positions_left = [
+                    const positions_left = [
                         ...(feature.geometry as LineString).coordinates,
                     ];
-                    let messages: string[][] = [...feature.properties.messages];
+                    const messages: string[][] = [...feature.properties.messages];
                     messages.splice(0, 1);
-                    for (let message of messages) {
+                    for (const message of messages) {
                         // &mut positions_left
-                        let segment = GeoSegment.from_brouter(
+                        const segment = GeoSegment.from_brouter(
                             message,
                             positions_left,
                         );
