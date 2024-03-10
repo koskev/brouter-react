@@ -1,7 +1,7 @@
 import { Bar } from "react-chartjs-2";
 import { DraggableList } from "./DraggableList";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
-import { callbacks_waypoint } from "./utils/callbacks";
+import { callbacks_routes, callbacks_waypoint } from "./utils/callbacks";
 
 import {
   Chart as ChartJS,
@@ -13,12 +13,14 @@ import {
   Legend,
 } from "chart.js";
 import stc from "string-to-color";
+import { useEffect, useState } from "react";
 
 export interface SidebarProperties {
   waypoints: Waypoint[];
   route: GeoRoutes;
 
   callbacks_waypoint: callbacks_waypoint;
+  callbacks_routes: callbacks_routes;
 }
 
 export function Sidebar(props: SidebarProperties) {
@@ -45,6 +47,7 @@ export function Sidebar(props: SidebarProperties) {
 function WaySurfaces(props: SidebarProperties) {
   let surfaces: Map<string, number> = new Map();
   let types: Map<string, number> = new Map();
+  const [highlight, setHighlight] = useState("");
 
   for (const route of props.route.routes) {
     for (const segment of route.segments) {
@@ -58,6 +61,25 @@ function WaySurfaces(props: SidebarProperties) {
       types.set(type, current_type_val + distance);
     }
   }
+
+  useEffect(() => {
+    let routes = props.route.clone();
+    // Set highlight for all paths
+    for (let route of routes.routes) {
+      for (let segment of route.segments) {
+        // Set highlight callback
+        if (
+          segment.message.get_surface() === highlight ||
+          segment.message.get_way_type() === highlight
+        ) {
+          segment.highlight = true;
+        } else {
+          segment.highlight = false;
+        }
+      }
+    }
+    props.callbacks_routes.set(routes);
+  }, [highlight]);
 
   ChartJS.register(
     CategoryScale,
@@ -75,18 +97,36 @@ function WaySurfaces(props: SidebarProperties) {
     };
   };
 
+  const total_distance = props.route.get_distance();
+  const plugins = [
+    {
+      id: "mouseout",
+      beforeEvent(_chart: any, args: any, _pluginOptions: any) {
+        if (args.event.type === "mouseout") {
+          setHighlight("");
+        }
+      },
+    },
+  ];
+
   const options = {
-    indexAxis: "y" as const,
+    indexAxis: "y",
     plugins: {
       title: {
         display: false,
-        text: "Chart.js Bar Chart - Stacked",
       },
       legend: {
         display: false,
       },
       tooltip: {
         position: "mouse",
+        callbacks: {
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+            setHighlight(label);
+            return `${label} ${(context.parsed.x / 1000.0).toFixed(2)}km`;
+          },
+        },
       },
     },
     responsive: true,
@@ -94,6 +134,7 @@ function WaySurfaces(props: SidebarProperties) {
       x: {
         display: false,
         stacked: true,
+        max: total_distance,
       },
       y: {
         display: false,
@@ -137,5 +178,5 @@ function WaySurfaces(props: SidebarProperties) {
   };
 
   //return null;
-  return <Bar options={options} data={data} />;
+  return <Bar options={options} data={data} plugins={plugins} />;
 }

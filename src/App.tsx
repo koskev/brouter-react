@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
-import { callbacks_waypoint } from "./utils/callbacks";
+import { callbacks_routes, callbacks_waypoint } from "./utils/callbacks";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 import { match } from "oxide.ts";
 
@@ -131,6 +131,10 @@ function App() {
     change_order: callback_waypoint_order,
   };
 
+  const callbacks_routes: callbacks_routes = {
+    set: setRouteData,
+  };
+
   useEffect(() => {
     routeData.update_routes(waypoints).then((res) => {
       match(res, {
@@ -147,6 +151,7 @@ function App() {
         waypoints={waypoints}
         route={routeData}
         callbacks_waypoint={callbacks_waypoint}
+        callbacks_routes={callbacks_routes}
       />
       <MapContainer
         center={initial_position}

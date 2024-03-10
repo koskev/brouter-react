@@ -1,5 +1,5 @@
 import { LatLng } from "leaflet";
-import { Waypoint } from "../GeoSegment";
+import { GeoRoutes, Waypoint } from "../GeoSegment";
 
 export type callback_map_pos = (pos: LatLng, zoom: number) => void;
 
@@ -10,4 +10,8 @@ export interface callbacks_waypoint {
   set: (idx: number, wp: Waypoint) => void;
   hover: (index: number, active: boolean) => void;
   change_order: (order: number[]) => void;
+}
+
+export interface callbacks_routes {
+  set: (routes: GeoRoutes) => void;
 }
