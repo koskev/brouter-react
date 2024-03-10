@@ -27,4 +27,17 @@ declare module "chart.js" {
   interface TooltipPositionerMap {
     mouse: TooltipPositionerFunction<ChartType>;
   }
+
+  // FIXME: this is just to satisfy the compiler. @types/chart.js seems incomplete/not working?
+  class Chart {
+    static register(...items: any);
+  }
+  class CategoryScale {}
+  class LinearScale {}
+  class BarElement {}
+  class Title {}
+  class Tooltip {
+    static positioners: { [mode: string]: ChartTooltipPositioner };
+  }
+  class Legend {}
 }

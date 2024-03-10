@@ -12,8 +12,18 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
 import stc from "string-to-color";
 import { useEffect, useState } from "react";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 export interface SidebarProperties {
   waypoints: Waypoint[];
@@ -80,15 +90,6 @@ function WaySurfaces(props: SidebarProperties) {
     }
     props.callbacks_routes.set(routes);
   }, [highlight]);
-
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-  );
 
   Tooltip.positioners.mouse = function (_elements: any, eventPosition: any) {
     return {
