@@ -5,11 +5,68 @@ import {
     Position,
 } from "geojson";
 import { LatLng, latLng } from "leaflet";
+import { Err, None, Ok, Option, Result, Some } from "oxide.ts";
+
+function parseIntOpt(str: string): Option<number> {
+    try {
+        return Some(parseInt(str));
+    } catch {
+        return None;
+    }
+}
+
+function array_to_map(input: string): Map<string, string> {
+    const pairs = input.split(" ");
+    let map = new Map();
+
+    // WHY can't we just use a map function? FUCK YOU TS!
+    for (const pair of pairs) {
+        const [key, val] = pair.split("=");
+        if (key && val) map.set(key, val);
+    }
+    return map;
+}
+
+class BrouterMessage {
+    longitude: number = 0;
+    latitude: number = 0;
+    elevation: number = 0;
+    distance: number = 0;
+    cost_per_km: number = 0;
+    cost_elev: number = 0;
+    cost_turn: number = 0;
+    cost_node: number = 0;
+    cost_init: number = 0;
+    way_tags: Map<string, string> = new Map();
+    node_tags: Map<string, string> = new Map();
+    time: number = 0;
+    energy: number = 0;
+
+    // TODO: actually match with the first message sent
+    constructor(message_opt: Option<string[]>) {
+        if (message_opt.isSome()) {
+            let message = message_opt.unwrap();
+            this.latitude = parseIntOpt(message[0]).unwrapOr(0) / 1e6;
+            this.longitude = parseIntOpt(message[1]).unwrapOr(0) / 1e6;
+            this.elevation = parseIntOpt(message[2]).unwrapOr(0);
+            this.distance = parseIntOpt(message[3]).unwrapOr(0);
+            this.cost_per_km = parseIntOpt(message[5]).unwrapOr(0);
+            this.cost_elev = parseIntOpt(message[6]).unwrapOr(0);
+            this.cost_turn = parseIntOpt(message[7]).unwrapOr(0);
+            this.cost_node = parseIntOpt(message[8]).unwrapOr(0);
+            this.cost_init = parseIntOpt(message[9]).unwrapOr(0);
+            this.way_tags = array_to_map(message[10]);
+            this.node_tags = array_to_map(message[11]);
+            this.cost_init = parseIntOpt(message[12]).unwrapOr(0);
+            this.energy = parseIntOpt(message[11]).unwrapOr(0);
+        }
+    }
+}
 
 export class GeoSegment {
     points: Position[] = [];
-    elevation: number = 0;
-    distance: number = 0;
+
+    message: BrouterMessage = new BrouterMessage(None);
 
     public static from_brouter(
         array: string[],
@@ -20,14 +77,14 @@ export class GeoSegment {
         }
         const segment = new GeoSegment();
 
-        const long = parseInt(array[1]) / 1e6;
-        const lat = parseInt(array[0]) / 1e6;
+        const message = new BrouterMessage(Some(array));
+
         // remove elements until we have a match
         while (remaining_points.length > 0) {
             // no match
             if (
-                remaining_points[0][0] !== lat &&
-                remaining_points[0][1] !== long
+                remaining_points[0][0] !== message.latitude &&
+                remaining_points[0][1] !== message.longitude
             ) {
                 const removed_element = remaining_points.splice(0, 1);
                 segment.points.push(removed_element[0]);
@@ -37,8 +94,6 @@ export class GeoSegment {
                 break;
             }
         }
-        segment.elevation = parseInt(array[2]);
-        segment.distance = parseInt(array[3]);
 
         return segment;
     }
@@ -164,7 +219,7 @@ export class GeoRoute {
 
     get_distance(): number {
         return this.segments.reduce((acc: number, val: GeoSegment) => {
-            return acc + val.distance;
+            return acc + val.message.distance;
         }, 0);
     }
 
@@ -185,7 +240,9 @@ export class GeoRoute {
                     const positions_left = [
                         ...(feature.geometry as LineString).coordinates,
                     ];
-                    const messages: string[][] = [...feature.properties.messages];
+                    const messages: string[][] = [
+                        ...feature.properties.messages,
+                    ];
                     messages.splice(0, 1);
                     for (const message of messages) {
                         // &mut positions_left
