@@ -22,3 +22,9 @@ declare namespace L {
     function photon(options?: any): any;
   }
 }
+
+declare module "chart.js" {
+  interface TooltipPositionerMap {
+    mouse: TooltipPositionerFunction<ChartType>;
+  }
+}
