@@ -18,11 +18,28 @@ export function Sidebar(props: SidebarProperties) {
   return (
     <div>
       <label> Total Distance: {(distance / 1000.0).toFixed(2)}km </label>
+      <div> Waypoints </div>
       <DraggableList
         key={key}
         items={props.waypoints}
         callbacks_waypoint={props.callbacks_waypoint}
       />
+      <div> Types </div>
+      <WaySurfaces {...props} />
     </div>
   );
+}
+
+function WaySurfaces(props: SidebarProperties) {
+  let surfaces: Map<string, number> = new Map();
+  for (const route of props.route.routes) {
+    for (const segment of route.segments) {
+      let surface = segment.message.get_surface();
+      let distance = segment.message.distance;
+      const current_val = surfaces.get(surface) ?? 0;
+      surfaces.set(surface, current_val + distance);
+    }
+  }
+  console.log(surfaces);
+  return null;
 }

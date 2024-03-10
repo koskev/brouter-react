@@ -50,23 +50,31 @@ class BrouterMessage {
             this.longitude = parseIntOpt(message[1]).unwrapOr(0) / 1e6;
             this.elevation = parseIntOpt(message[2]).unwrapOr(0);
             this.distance = parseIntOpt(message[3]).unwrapOr(0);
-            this.cost_per_km = parseIntOpt(message[5]).unwrapOr(0);
-            this.cost_elev = parseIntOpt(message[6]).unwrapOr(0);
-            this.cost_turn = parseIntOpt(message[7]).unwrapOr(0);
-            this.cost_node = parseIntOpt(message[8]).unwrapOr(0);
-            this.cost_init = parseIntOpt(message[9]).unwrapOr(0);
-            this.way_tags = array_to_map(message[10]);
-            this.node_tags = array_to_map(message[11]);
-            this.cost_init = parseIntOpt(message[12]).unwrapOr(0);
-            this.energy = parseIntOpt(message[11]).unwrapOr(0);
+            this.cost_per_km = parseIntOpt(message[4]).unwrapOr(0);
+            this.cost_elev = parseIntOpt(message[5]).unwrapOr(0);
+            this.cost_turn = parseIntOpt(message[6]).unwrapOr(0);
+            this.cost_node = parseIntOpt(message[7]).unwrapOr(0);
+            this.cost_init = parseIntOpt(message[8]).unwrapOr(0);
+            this.way_tags = array_to_map(message[9]);
+            this.node_tags = array_to_map(message[10]);
+            this.cost_init = parseIntOpt(message[11]).unwrapOr(0);
+            this.energy = parseIntOpt(message[12]).unwrapOr(0);
         }
+    }
+
+    get_way_type(): string {
+        return this.way_tags.get("highway") ?? "unknown";
+    }
+
+    get_surface(): string {
+        return this.way_tags.get("surface") ?? "unknown";
     }
 }
 
 export class GeoSegment {
     points: Position[] = [];
-
     message: BrouterMessage = new BrouterMessage(None);
+    highlight: boolean = false;
 
     public static from_brouter(
         array: string[],
@@ -77,14 +85,14 @@ export class GeoSegment {
         }
         const segment = new GeoSegment();
 
-        const message = new BrouterMessage(Some(array));
+        segment.message = new BrouterMessage(Some(array));
 
         // remove elements until we have a match
         while (remaining_points.length > 0) {
             // no match
             if (
-                remaining_points[0][0] !== message.latitude &&
-                remaining_points[0][1] !== message.longitude
+                remaining_points[0][0] !== segment.message.latitude &&
+                remaining_points[0][1] !== segment.message.longitude
             ) {
                 const removed_element = remaining_points.splice(0, 1);
                 segment.points.push(removed_element[0]);
