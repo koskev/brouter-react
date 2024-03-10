@@ -55,7 +55,10 @@ export class GeoRoutes {
         return new_obj;
     }
 
-    async update_routes(waypoints: Waypoint[]): Promise<boolean> {
+    async update_routes(
+        waypoints: Waypoint[],
+    ): Promise<Result<number[], string>> {
+        let updated_routes = [];
         if (waypoints.length >= 2) {
             // Consider removed waypoints. We can only have wp - 1 routes
             this.routes = this.routes.slice(0, waypoints.length - 1);
@@ -76,20 +79,21 @@ export class GeoRoutes {
                     const json = await res.json();
                     const geo_route = new GeoRoute(json);
                     this.routes[i - 1] = geo_route;
+                    updated_routes.push(i - 1);
                 } else {
                     // Error code
                     const text = await res.text();
                     console.error(
                         `Failed to calculate route. Response: ${text}`,
                     );
-                    return false;
+                    return Err(text);
                 }
             }
         } else {
             this.routes = [];
         }
         this.waypoints = waypoints;
-        return false;
+        return Ok(updated_routes);
     }
 
     get_lang_lats(): LatLng[][] {

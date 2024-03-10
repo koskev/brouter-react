@@ -8,6 +8,7 @@ import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
 import { callbacks_waypoint } from "./utils/callbacks";
 import { Routes, Route, useSearchParams } from "react-router-dom";
+import { match } from "oxide.ts";
 
 export function MyRouter() {
   return (
@@ -131,9 +132,13 @@ function App() {
   };
 
   useEffect(() => {
-    routeData
-      .update_routes(waypoints)
-      .then((_) => setRouteData(routeData.clone()));
+    routeData.update_routes(waypoints).then((res) => {
+      match(res, {
+        Ok: (_val) => {},
+        Err: (error) => console.log(`Failed to calculate route ${error}`),
+      });
+      return setRouteData(routeData.clone());
+    });
   }, [waypoints]);
 
   return (
