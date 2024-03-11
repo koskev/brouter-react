@@ -46,6 +46,7 @@ export function Sidebar(props: SidebarProperties) {
       <DraggableList
         key={key}
         items={props.waypoints}
+        route={props.route}
         callbacks_waypoint={props.callbacks_waypoint}
       />
       <div> Types </div>

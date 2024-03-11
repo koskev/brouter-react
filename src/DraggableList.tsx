@@ -9,10 +9,10 @@ import swap from "lodash-move";
 import styles from "./styles.module.css";
 import { useRef } from "react";
 import { Form, InputGroup } from "react-bootstrap";
-import { Waypoint } from "./GeoSegment";
+import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { callbacks_waypoint } from "./utils/callbacks";
 
-const height = 50;
+const height = 80;
 const fn =
   (order: number[], active = false, originalIndex = 0, curIndex = 0, y = 0) =>
   (index: number) =>
@@ -34,6 +34,7 @@ const fn =
 
 export interface DraggableListProps {
   items: Waypoint[];
+  route: GeoRoutes;
   callbacks_waypoint: callbacks_waypoint;
 }
 
@@ -72,24 +73,40 @@ export function DraggableList(props: DraggableListProps) {
       style={{ height: props.items.length * height }}
     >
       {springs.map(({ zIndex, shadow, y, scale }, i) => (
-        <animated.div
-          {...bind(i)}
-          {...hover_bind(i)}
-          key={i}
-          style={{
-            zIndex,
-            boxShadow: shadow.to(
-              (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`,
-            ),
-            y,
-            scale,
-          }}
-        >
-          <DraggableEntry
-            waypoint={props.items[i]}
-            callbacks_waypoint={props.callbacks_waypoint}
-          />
-        </animated.div>
+        <>
+          <animated.div
+            {...bind(i)}
+            {...hover_bind(i)}
+            key={i}
+            style={{
+              zIndex: zIndex.get() + 1,
+              boxShadow: shadow.to(
+                (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`,
+              ),
+              y,
+              scale,
+            }}
+          >
+            <DraggableEntry
+              waypoint={props.items[i]}
+              callbacks_waypoint={props.callbacks_waypoint}
+            />
+          </animated.div>
+          {i === 0 ? (
+            <></>
+          ) : (
+            <div
+              style={{
+                color: "black",
+                position: "absolute",
+                top: height / 2 + (i - 1) * height,
+              }}
+            >
+              {(props.route.routes[i - 1]?.get_distance() / 1000.0).toFixed(2)}
+              km
+            </div>
+          )}
+        </>
       ))}
     </div>
   );
