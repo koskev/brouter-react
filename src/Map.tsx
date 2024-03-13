@@ -6,8 +6,8 @@ import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
 import L, { LatLng, latLng } from "leaflet";
 import { callbacks_waypoint, callback_map_pos } from "./utils/callbacks";
-import { point, nearestPointOnLine, radiansToLength } from "@turf/turf";
 import { MultiLineString } from "geojson";
+import * as turf from "@turf/turf";
 
 export interface MapProperties {
   waypoints: Waypoint[];
@@ -31,14 +31,14 @@ function LineMarker(props: LineMarkerProps) {
   // XXX: if this is part of the map, we cause a bunch of rerenders and moving the waypoints won't work
   useEffect(() => {
     map.on("mousemove", (e) => {
-      let pt = nearestPointOnLine(
+      let pt = turf.nearestPointOnLine(
         props.lines,
-        point([e.latlng.lng, e.latlng.lat]),
+        turf.point([e.latlng.lng, e.latlng.lat]),
         {
           units: "degrees",
         },
       );
-      let distance_km = radiansToLength(pt.properties.dist, "degrees");
+      let distance_km = turf.radiansToLength(pt.properties.dist, "degrees");
       if (distance_km < 0.1) {
         setLineMarkerPos(
           latLng(pt.geometry.coordinates[1], pt.geometry.coordinates[0]),
