@@ -73,7 +73,11 @@ export function Map(props: MapProperties) {
     for (const route of props.route_data.routes) {
       for (const line of route.get_lang_lats()) {
         let points = line.map((p) => [p.lng, p.lat]);
-        lines.coordinates = lines.coordinates.concat([points]);
+        if (lines.coordinates[0]?.[0]?.length === 0) {
+          lines.coordinates = [points];
+        } else {
+          lines.coordinates = lines.coordinates.concat([points]);
+        }
       }
     }
     return lines;
