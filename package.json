@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@react-spring/web": "^9.7.3",
+    "@turf/turf": "7.0.0-alpha.114",
     "@types/chart.js": "^2.9.41",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",

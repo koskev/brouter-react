@@ -1,11 +1,13 @@
-import { useMap } from "react-leaflet";
+import { CircleMarker, useMap } from "react-leaflet";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NewMarkerDialog } from "./NewMarkerDialog";
 import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
-import L, { LatLng } from "leaflet";
+import L, { LatLng, latLng } from "leaflet";
 import { callbacks_waypoint, callback_map_pos } from "./utils/callbacks";
+import { point, nearestPointOnLine, radiansToLength } from "@turf/turf";
+import { MultiLineString } from "geojson";
 
 export interface MapProperties {
   waypoints: Waypoint[];
@@ -16,11 +18,66 @@ export interface MapProperties {
   callback_map_pos: callback_map_pos;
 }
 
+interface LineMarkerProps {
+  lines: MultiLineString;
+}
+
+function LineMarker(props: LineMarkerProps) {
+  const map = useMap();
+  const [lineMarkerPos, setLineMarkerPos] = useState<LatLng | undefined>(
+    undefined,
+  );
+
+  // XXX: if this is part of the map, we cause a bunch of rerenders and moving the waypoints won't work
+  useEffect(() => {
+    map.on("mousemove", (e) => {
+      let pt = nearestPointOnLine(
+        props.lines,
+        point([e.latlng.lng, e.latlng.lat]),
+        {
+          units: "degrees",
+        },
+      );
+      let distance_km = radiansToLength(pt.properties.dist, "degrees");
+      if (distance_km < 0.1) {
+        setLineMarkerPos(
+          latLng(pt.geometry.coordinates[1], pt.geometry.coordinates[0]),
+        );
+      } else {
+        setLineMarkerPos(undefined);
+      }
+    });
+    return () => {
+      map.off("mousemove");
+    };
+  }, [props]);
+  if (lineMarkerPos) {
+    return <CircleMarker center={lineMarkerPos} />;
+  } else {
+    return <></>;
+  }
+}
+
 export function Map(props: MapProperties) {
   const map = useMap();
   const [newMarkerPos, setNewMarkerPos] = useState<LatLng | undefined>(
     undefined,
   );
+
+  let all_lines = useMemo(() => {
+    //let lines = multiLineString([[[]]]);
+    let lines = {
+      type: "MultiLineString",
+      coordinates: [[[]]],
+    } as MultiLineString;
+    for (const route of props.route_data.routes) {
+      for (const line of route.get_lang_lats()) {
+        let points = line.map((p) => [p.lng, p.lat]);
+        lines.coordinates = lines.coordinates.concat([points]);
+      }
+    }
+    return lines;
+  }, [props]);
 
   useEffect(() => {
     map.scrollWheelZoom.enable();
@@ -75,6 +132,7 @@ export function Map(props: MapProperties) {
           />
         );
       })}
+      <LineMarker lines={all_lines} />
     </div>
   );
 }
