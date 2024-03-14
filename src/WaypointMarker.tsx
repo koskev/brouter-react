@@ -73,6 +73,7 @@ export function WaypointMarker(props: MarkerProperties) {
       ref={markerRef}
       eventHandlers={markerEvents}
       icon={icon}
+      riseOnHover={true}
     >
       <Popup ref={popupRef}>
         <button onClick={handle_remove_button}> Remove Waypoint </button>
