@@ -5358,9 +5358,9 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 leaflet.photon@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/leaflet.photon/-/leaflet.photon-0.9.0.tgz#b8a2a2698529241efc813d3d7bb9b0e07062d577"
-  integrity sha512-qLZzYqBAHvOGgf/ymj3zdknlR1zfVZTPSF02wfES3tWR0iZA48HaxpFTZ0ZLflHxsDuQf6Hl+03xwBAHHQTslA==
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/leaflet.photon/-/leaflet.photon-0.9.1.tgz#cc73064ded1f414dabe284ace5269ce2de1901be"
+  integrity sha512-adwlP+GbG5ZiyLZJJgktJNSVBAGUAEKkhPG6EjgXNyMAu9nSR2BfDzcfsMnWluq1lcaki4vI88DXt8XJyh3GEg==
 
 leaflet@^1.9.4:
   version "1.9.4"
