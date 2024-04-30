@@ -38,7 +38,7 @@ export function LineMarker(props: LineMarkerProps) {
     };
   }, [props]);
   if (lineMarkerPos) {
-    return <CircleMarker center={lineMarkerPos} />;
+    return <CircleMarker center={lineMarkerPos} radius={10} />;
   } else {
     return <></>;
   }
