@@ -6,7 +6,6 @@ import { Route } from "./Route";
 import { WaypointMarker } from "./WaypointMarker";
 import L, { LatLng } from "leaflet";
 import { callbacks_waypoint, callback_map_pos } from "./utils/callbacks";
-import { MultiLineString } from "geojson";
 import { LineMarker } from "./LineMarker";
 import { LineDistanceMarker } from "./LineDistanceMarker";
 import * as turf from "@turf/turf";
