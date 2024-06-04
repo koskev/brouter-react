@@ -9,6 +9,7 @@ import { callbacks_waypoint, callback_map_pos } from "./utils/callbacks";
 import { MultiLineString } from "geojson";
 import { LineMarker } from "./LineMarker";
 import { LineDistanceMarker } from "./LineDistanceMarker";
+import * as turf from "@turf/turf";
 
 export interface MapProperties {
   waypoints: Waypoint[];
@@ -26,22 +27,17 @@ export function Map(props: MapProperties) {
   );
 
   let all_lines = useMemo(() => {
-    //let lines = multiLineString([[[]]]);
-    let lines = {
-      type: "MultiLineString",
-      coordinates: [[[]]],
-    } as MultiLineString;
+    let segments: number[][][] = [];
+    let lines: number[][] = [];
     for (const route of props.route_data.routes) {
       for (const line of route.get_lang_lats()) {
-        let points = line.map((p) => [p.lng, p.lat]);
-        if (lines.coordinates[0]?.[0]?.length === 0) {
-          lines.coordinates = [points];
-        } else {
-          lines.coordinates = lines.coordinates.concat([points]);
-        }
+        line.forEach((p) => lines.push([p.lng, p.lat]));
       }
     }
-    return lines;
+    segments.push(lines);
+    let multi_line = turf.multiLineString(segments);
+
+    return multi_line.geometry;
   }, [props]);
 
   useEffect(() => {
