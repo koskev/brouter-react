@@ -43,22 +43,24 @@ function App() {
   }, []);
 
   const [waypoints, setWaypoints] = useState<Waypoint[]>(initial_waypoints);
+  const [mapPos, setMapPos] = useState<LatLng>(initial_position);
+  const [mapZoom, setMapZoom] = useState<number>(initial_zoom);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
 
   useEffect(() => {
     setSearchParams((prev) => {
       prev.set("waypoints", JSON.stringify(waypoints));
+      prev.set("lat", `${mapPos.lat}`);
+      prev.set("lng", `${mapPos.lng}`);
+      prev.set("zoom", `${mapZoom}`);
       return prev;
     });
-  }, [waypoints]);
+  }, [waypoints, mapPos, mapZoom]);
 
   const callback_map_pos = (pos: LatLng, zoom: number) => {
-    setSearchParams((prev) => {
-      prev.set("lat", `${pos.lat}`);
-      prev.set("lng", `${pos.lng}`);
-      prev.set("zoom", `${zoom}`);
-      return prev;
-    });
+    // XXX: Using setSeatchParams here removes waypoints
+    setMapPos(pos);
+    setMapZoom(zoom);
   };
 
   const callback_add_waypoint = (pos: Waypoint) => {
