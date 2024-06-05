@@ -210,6 +210,17 @@ export class Waypoint {
     set_number(id: number) {
         this.wp_number = id;
     }
+
+    toJSON() {
+        return {
+            coords: {
+                lat: parseFloat(this.coords.lat.toFixed(5)),
+                lng: parseFloat(this.coords.lng.toFixed(5)),
+            },
+            name: this.name,
+            wp_number: this.wp_number,
+        };
+    }
 }
 
 export class GeoRoute {

@@ -49,9 +49,10 @@ function App() {
 
   useEffect(() => {
     setSearchParams((prev) => {
-      prev.set("waypoints", JSON.stringify(waypoints));
-      prev.set("lat", `${mapPos.lat}`);
-      prev.set("lng", `${mapPos.lng}`);
+      let waypoint_json = JSON.stringify(waypoints);
+      prev.set("waypoints", waypoint_json);
+      prev.set("lat", `${mapPos.lat.toFixed(5)}`);
+      prev.set("lng", `${mapPos.lng.toFixed(5)}`);
       prev.set("zoom", `${mapZoom}`);
       return prev;
     });
