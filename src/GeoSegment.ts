@@ -107,9 +107,20 @@ export class GeoSegment {
     }
 }
 
+class InstanceInfo {
+    host: string = "brouter.kokev.de";
+    protocol: string = "https";
+    path: string = "brouter";
+
+    get_url(): string {
+        return `${this.protocol}://${this.host}/${this.path}`;
+    }
+}
+
 export class GeoRoutes {
     routes: GeoRoute[] = [];
     waypoints: Waypoint[] = [];
+    instance: InstanceInfo = new InstanceInfo();
 
     clone(): GeoRoutes {
         const new_obj = new GeoRoutes();
@@ -136,7 +147,7 @@ export class GeoRoutes {
                     continue;
                 }
                 const res = await fetch(
-                    `https://brouter.kokev.de/brouter?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=trekking&alternativeidx=0&format=geojson`,
+                    `${this.instance.get_url()}?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=trekking&alternativeidx=0&format=geojson`,
                 );
                 if (res.ok) {
                     const json = await res.json();
