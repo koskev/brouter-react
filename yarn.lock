@@ -3581,6 +3581,11 @@
   dependencies:
     "@swc/core" "^1.5.7"
 
+"@zalari/string-compression-utils@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@zalari/string-compression-utils/-/string-compression-utils-0.1.1.tgz#17aff9d4284cbd1475f964e563ba6d9ea7124549"
+  integrity sha512-DF5XCdtIwrJfzpJkzLIayOJtsA8oXMgmd3QTUlMlp3E4xrL+w1hEsuasOvQLAbJDpb45CLdTybRNKcOTaZd6JA==
+
 abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"

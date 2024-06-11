@@ -14,6 +14,7 @@ import { Map } from "./Map";
 import { callbacks_routes, callbacks_waypoint } from "./utils/callbacks";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 import { match } from "oxide.ts";
+import { compress, decompress } from "@zalari/string-compression-utils";
 
 export function MyRouter() {
   return (
@@ -38,16 +39,7 @@ function App() {
     [],
   );
 
-  const initial_waypoints = useMemo(() => {
-    const wps_str = searchParams.get("waypoints") ?? "[]";
-    const wps_proto: Waypoint[] = JSON.parse(wps_str);
-    const wps = wps_proto.map((wp_proto) =>
-      Object.assign(new Waypoint(), wp_proto),
-    );
-    return wps;
-  }, []);
-
-  const [waypoints, setWaypoints] = useState<Waypoint[]>(initial_waypoints);
+  const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [mapPos, setMapPos] = useState<LatLng>(initial_position);
   const [mapZoom, setMapZoom] = useState<number>(initial_zoom);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
@@ -57,6 +49,8 @@ function App() {
   const [profiles, setProfiles] = useState<BrouterProfileList>(
     new BrouterProfileList(),
   );
+  // Thank you react for now allowing async code :/
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Load profiles and set the default one to "trekking"
   useEffect(() => {
@@ -67,20 +61,43 @@ function App() {
       let trekking = new_list.load_profile("trekking");
       setProfiles(new_list);
       setSelectedProfile(await trekking);
+
+      // waypoints
+
+      const data = searchParams.get("waypoints") ?? "[]";
+      let wps_str;
+      try {
+        wps_str = await decompress(data, "gzip");
+      } catch {
+        wps_str = "[]";
+      }
+      const wps_proto: Waypoint[] = JSON.parse(wps_str);
+      const wps = wps_proto.map((wp_proto) =>
+        Object.assign(new Waypoint(), wp_proto),
+      );
+      setWaypoints(wps);
+      setLoading(false);
     };
     func();
   }, []);
 
   useEffect(() => {
-    setSearchParams((prev) => {
-      let waypoint_json = JSON.stringify(waypoints);
-      prev.set("waypoints", waypoint_json);
-      prev.set("lat", `${mapPos.lat.toFixed(5)}`);
-      prev.set("lng", `${mapPos.lng.toFixed(5)}`);
-      prev.set("zoom", `${mapZoom}`);
-      return prev;
-    });
-  }, [waypoints, mapPos, mapZoom]);
+    let func = async () => {
+      let wps_compressed = await compress(JSON.stringify(waypoints), "gzip");
+
+      setSearchParams((prev) => {
+        prev.set("waypoints", wps_compressed);
+
+        prev.set("lat", `${mapPos.lat.toFixed(5)}`);
+        prev.set("lng", `${mapPos.lng.toFixed(5)}`);
+        prev.set("zoom", `${mapZoom}`);
+        return prev;
+      });
+    };
+    if (!loading) {
+      func();
+    }
+  }, [waypoints, mapPos, mapZoom, selectedProfile, loading]);
 
   const callback_map_pos = (pos: LatLng, zoom: number) => {
     // XXX: Using setSeatchParams here removes waypoints
