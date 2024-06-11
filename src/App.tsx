@@ -2,13 +2,7 @@ import { ScaleControl, TileLayer } from "react-leaflet";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { LatLng, latLng } from "leaflet";
-import {
-  ProfilerProps,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BrouterProfile,
   BrouterProfileList,
