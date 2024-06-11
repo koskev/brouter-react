@@ -51,12 +51,10 @@ function ProfileSelector(props: ProfileSelectorProperties) {
   const on_change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const func = async () => {
       let profile = await props.profile_list.load_profile(e.target.value);
-      console.log(profile);
       props.callbacks_routes.set_profile(profile);
     };
     func();
   };
-  console.log(props);
   return (
     <Form.Select onChange={on_change} value={props.selected_profile.name}>
       {props.profile_list.profile_names.map((profile) => (

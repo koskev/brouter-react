@@ -6,7 +6,6 @@ import { latLng } from "leaflet";
 import { Marker } from "react-leaflet";
 
 export function LineDistanceMarker({ lines }: { lines: MultiLineString }) {
-  console.log("distance");
   const line_string = {
     type: "LineString",
     coordinates: lines.coordinates.flat(),
