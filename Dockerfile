@@ -5,7 +5,7 @@ WORKDIR /build
 # Copy this first to allow for caching
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn --ignore-engines install
 
 COPY . .
 RUN yarn build
