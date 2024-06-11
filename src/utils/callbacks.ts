@@ -1,5 +1,5 @@
 import { LatLng } from "leaflet";
-import { GeoRoutes, Waypoint } from "../GeoSegment";
+import { BrouterProfile, GeoRoutes, Waypoint } from "../GeoSegment";
 
 export type callback_map_pos = (pos: LatLng, zoom: number) => void;
 
@@ -14,4 +14,5 @@ export interface callbacks_waypoint {
 
 export interface callbacks_routes {
   set: (routes: GeoRoutes) => void;
+  set_profile: (profile: BrouterProfile) => void;
 }

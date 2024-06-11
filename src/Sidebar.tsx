@@ -1,6 +1,11 @@
 import { Bar } from "react-chartjs-2";
 import { DraggableList } from "./DraggableList";
-import { GeoRoutes, Waypoint } from "./GeoSegment";
+import {
+  BrouterProfile,
+  BrouterProfileList,
+  GeoRoutes,
+  Waypoint,
+} from "./GeoSegment";
 import { callbacks_routes, callbacks_waypoint } from "./utils/callbacks";
 
 import {
@@ -15,6 +20,7 @@ import {
 
 import stc from "string-to-color";
 import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 
 ChartJS.register(
   CategoryScale,
@@ -28,9 +34,36 @@ ChartJS.register(
 export interface SidebarProperties {
   waypoints: Waypoint[];
   route: GeoRoutes;
+  profile_list: BrouterProfileList;
+  selected_profile: BrouterProfile;
 
   callbacks_waypoint: callbacks_waypoint;
   callbacks_routes: callbacks_routes;
+}
+
+interface ProfileSelectorProperties {
+  profile_list: BrouterProfileList;
+  selected_profile: BrouterProfile;
+  callbacks_routes: callbacks_routes;
+}
+
+function ProfileSelector(props: ProfileSelectorProperties) {
+  const on_change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const func = async () => {
+      let profile = await props.profile_list.load_profile(e.target.value);
+      console.log(profile);
+      props.callbacks_routes.set_profile(profile);
+    };
+    func();
+  };
+  console.log(props);
+  return (
+    <Form.Select onChange={on_change} value={props.selected_profile.name}>
+      {props.profile_list.profile_names.map((profile) => (
+        <option value={profile}>{profile}</option>
+      ))}
+    </Form.Select>
+  );
 }
 
 export function Sidebar(props: SidebarProperties) {
@@ -41,6 +74,11 @@ export function Sidebar(props: SidebarProperties) {
   const key = props.waypoints.map((wp) => `${wp.lng()}${wp.lat()}`).join("");
   return (
     <div>
+      <ProfileSelector
+        profile_list={props.profile_list}
+        callbacks_routes={props.callbacks_routes}
+        selected_profile={props.selected_profile}
+      />
       <label> Total Distance: {(distance / 1000.0).toFixed(2)}km </label>
       <div> Waypoints </div>
       <DraggableList

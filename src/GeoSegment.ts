@@ -107,6 +107,64 @@ export class GeoSegment {
     }
 }
 
+export class BrouterProfileList {
+    profile_names: string[] = [];
+    async load_list() {
+        let response = await fetch("profiles/profiles.json");
+        let list = await response.json();
+        this.profile_names = list;
+    }
+
+    get_profile_names(): string[] {
+        return this.profile_names;
+    }
+
+    async load_profile(name: string): Promise<BrouterProfile> {
+        let response = await fetch(`profiles/${name}.brf`);
+        let data = await response.text();
+
+        let profile = new BrouterProfile();
+        profile.name = name;
+        profile.profile = data;
+        return profile;
+    }
+}
+
+export class BrouterProfile {
+    name: string = "trekking";
+    profile: string = "";
+    is_updated: boolean = false;
+
+    // TODO: implement caching
+    async upload_profile(instance: InstanceInfo) {
+        let url = `${instance.get_url()}/profile/${this.get_profile_name()}`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=UTF-8",
+            },
+            body: this.profile,
+        });
+
+        if (response.ok) {
+            this.is_updated = true;
+        } else {
+            console.error("Failed to upload profile!");
+            console.error(response);
+        }
+    }
+
+    set_data(data: string) {
+        this.profile = data;
+        this.is_updated = false;
+    }
+
+    get_profile_name() {
+        return `custom_${this.name}`;
+    }
+}
+
 class InstanceInfo {
     host: string = "brouter.kokev.de";
     protocol: string = "https";
@@ -121,6 +179,7 @@ export class GeoRoutes {
     routes: GeoRoute[] = [];
     waypoints: Waypoint[] = [];
     instance: InstanceInfo = new InstanceInfo();
+    profile: BrouterProfile = new BrouterProfile();
 
     clone(): GeoRoutes {
         const new_obj = new GeoRoutes();
@@ -131,6 +190,7 @@ export class GeoRoutes {
 
     async update_routes(
         waypoints: Waypoint[],
+        profile: BrouterProfile,
     ): Promise<Result<number[], string>> {
         let updated_routes = [];
         if (waypoints.length >= 2) {
@@ -141,13 +201,22 @@ export class GeoRoutes {
                 const end = waypoints[i];
                 const old_start = this.waypoints[i - 1];
                 const old_end = this.waypoints[i];
-                if (start === old_start && end === old_end) {
-                    // Don't update if we already have the route
+                const old_profile = this.profile;
+                if (
+                    start === old_start &&
+                    end === old_end &&
+                    profile === old_profile
+                ) {
+                    // Don't update if we already have the route with the same profile
                     // TODO: consider different options
                     continue;
                 }
+                if (!profile.is_updated) {
+                    profile.upload_profile(this.instance);
+                }
+                console.log(`Updating route with profile ${profile.name}`);
                 const res = await fetch(
-                    `${this.instance.get_url()}?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=trekking&alternativeidx=0&format=geojson`,
+                    `${this.instance.get_url()}?lonlats=${start.lng()},${start.lat()}|${end.lng()},${end.lat()}&profile=${profile.get_profile_name()}&alternativeidx=0&format=geojson`,
                 );
                 if (res.ok) {
                     const json = await res.json();
@@ -167,6 +236,7 @@ export class GeoRoutes {
             this.routes = [];
         }
         this.waypoints = waypoints;
+        this.profile = profile;
         return Ok(updated_routes);
     }
 

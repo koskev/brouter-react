@@ -3,7 +3,12 @@ import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { LatLng, latLng } from "leaflet";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { GeoRoutes, Waypoint } from "./GeoSegment";
+import {
+  BrouterProfile,
+  BrouterProfileList,
+  GeoRoutes,
+  Waypoint,
+} from "./GeoSegment";
 import { Sidebar } from "./Sidebar";
 import { Map } from "./Map";
 import { callbacks_routes, callbacks_waypoint } from "./utils/callbacks";
@@ -46,6 +51,25 @@ function App() {
   const [mapPos, setMapPos] = useState<LatLng>(initial_position);
   const [mapZoom, setMapZoom] = useState<number>(initial_zoom);
   const [routeData, setRouteData] = useState<GeoRoutes>(new GeoRoutes());
+  const [selectedProfile, setSelectedProfile] = useState<BrouterProfile>(
+    new BrouterProfile(),
+  );
+  const [profiles, setProfiles] = useState<BrouterProfileList>(
+    new BrouterProfileList(),
+  );
+
+  // Load profiles and set the default one to "trekking"
+  useEffect(() => {
+    const func = async () => {
+      let new_list = new BrouterProfileList();
+      await new_list.load_list();
+      // TODO: load from url
+      let trekking = new_list.load_profile("trekking");
+      setProfiles(new_list);
+      setSelectedProfile(await trekking);
+    };
+    func();
+  }, []);
 
   useEffect(() => {
     setSearchParams((prev) => {
@@ -136,17 +160,18 @@ function App() {
 
   const callbacks_routes: callbacks_routes = {
     set: setRouteData,
+    set_profile: setSelectedProfile,
   };
 
   useEffect(() => {
-    routeData.update_routes(waypoints).then((res) => {
+    routeData.update_routes(waypoints, selectedProfile).then((res) => {
       match(res, {
         Ok: (_val) => {},
         Err: (error) => console.log(`Failed to calculate route ${error}`),
       });
       return setRouteData(routeData.clone());
     });
-  }, [waypoints]);
+  }, [waypoints, selectedProfile]);
 
   return (
     <div className="main">
@@ -155,6 +180,8 @@ function App() {
         route={routeData}
         callbacks_waypoint={callbacks_waypoint}
         callbacks_routes={callbacks_routes}
+        profile_list={profiles}
+        selected_profile={selectedProfile}
       />
       <MapContainer
         center={initial_position}
