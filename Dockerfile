@@ -1,11 +1,11 @@
-FROM node:22-alpine as builder
+FROM node:18-alpine as builder
 
 WORKDIR /build
 
 # Copy this first to allow for caching
 COPY package.json yarn.lock ./
 
-RUN yarn --ignore-engines install
+RUN yarn install
 
 COPY . .
 RUN yarn build
