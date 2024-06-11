@@ -82,13 +82,18 @@ function App() {
       try {
         wps_str = await decompress(data, "gzip");
       } catch {
-        wps_str = "[]";
+        wps_str = data;
       }
-      const wps_proto: Waypoint[] = JSON.parse(wps_str);
-      const wps = wps_proto.map((wp_proto) =>
-        Object.assign(new Waypoint(), wp_proto),
-      );
-      setWaypoints(wps);
+      try {
+        const wps_proto: Waypoint[] = JSON.parse(wps_str);
+        const wps = wps_proto.map((wp_proto) =>
+          Object.assign(new Waypoint(), wp_proto),
+        );
+        setWaypoints(wps);
+      } catch {
+        // Invalid data
+        setWaypoints([]);
+      }
       setLoading(false);
     };
     func();
