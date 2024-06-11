@@ -2,7 +2,13 @@ import { ScaleControl, TileLayer } from "react-leaflet";
 import "./App.css";
 import { MapContainer } from "react-leaflet/MapContainer";
 import { LatLng, latLng } from "leaflet";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ProfilerProps,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   BrouterProfile,
   BrouterProfileList,
@@ -57,10 +63,17 @@ function App() {
     const func = async () => {
       let new_list = new BrouterProfileList();
       await new_list.load_list();
-      // TODO: load from url
-      let trekking = new_list.load_profile("trekking");
+      let profile;
+      try {
+        const profile_data = searchParams.get("profile") ?? "";
+        const profile_str = await decompress(profile_data, "gzip");
+        const profile_proto: BrouterProfile = JSON.parse(profile_str);
+        profile = Object.assign(new BrouterProfile(), profile_proto);
+      } catch {
+        profile = await new_list.load_profile("trekking");
+      }
       setProfiles(new_list);
-      setSelectedProfile(await trekking);
+      setSelectedProfile(profile);
 
       // waypoints
 
@@ -84,6 +97,10 @@ function App() {
   useEffect(() => {
     let func = async () => {
       let wps_compressed = await compress(JSON.stringify(waypoints), "gzip");
+      let profile_compressed = await compress(
+        JSON.stringify(selectedProfile),
+        "gzip",
+      );
 
       setSearchParams((prev) => {
         prev.set("waypoints", wps_compressed);
@@ -91,6 +108,7 @@ function App() {
         prev.set("lat", `${mapPos.lat.toFixed(5)}`);
         prev.set("lng", `${mapPos.lng.toFixed(5)}`);
         prev.set("zoom", `${mapZoom}`);
+        prev.set("profile", profile_compressed);
         return prev;
       });
     };
