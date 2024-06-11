@@ -8,9 +8,9 @@ import swap from "lodash-move";
 
 import styles from "./styles.module.css";
 import { useRef } from "react";
-import { Form, InputGroup } from "react-bootstrap";
 import { GeoRoutes, Waypoint } from "./GeoSegment";
 import { callbacks_waypoint } from "./utils/callbacks";
+import { WaypointEntry } from "./WaypointEntry";
 
 const height = 80;
 const fn =
@@ -87,7 +87,7 @@ export function DraggableList(props: DraggableListProps) {
               scale,
             }}
           >
-            <DraggableEntry
+            <WaypointEntry
               waypoint={props.items[i]}
               callbacks_waypoint={props.callbacks_waypoint}
             />
@@ -109,31 +109,5 @@ export function DraggableList(props: DraggableListProps) {
         </>
       ))}
     </div>
-  );
-}
-
-interface DraggableEntryProperties {
-  waypoint: Waypoint;
-  callbacks_waypoint: callbacks_waypoint;
-}
-
-function DraggableEntry(props: DraggableEntryProperties) {
-  const handle_change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const wp = props.waypoint;
-    wp.name = e.target.value;
-    props.callbacks_waypoint.set(wp.get_number(), wp);
-  };
-  return (
-    <InputGroup className="mb-3">
-      <InputGroup.Text id="basic-addon1">
-        {props.waypoint.get_number()}
-      </InputGroup.Text>
-      <Form.Control
-        placeholder="Waypoint name"
-        value={props.waypoint.name}
-        aria-describedby="basic-addon1"
-        onChange={handle_change}
-      />
-    </InputGroup>
   );
 }
