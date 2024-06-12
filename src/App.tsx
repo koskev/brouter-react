@@ -49,8 +49,14 @@ function App() {
   const [profiles, setProfiles] = useState<BrouterProfileList>(
     new BrouterProfileList(),
   );
-  // Thank you react for now allowing async code :/
+  // Thank you react for not allowing async code :/
   const [loading, setLoading] = useState<boolean>(true);
+  // Workaround for strict mode. Prevents duplicate api calls
+  const [triggerLoad, setTriggerLoad] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTriggerLoad(true);
+  }, []);
 
   // Load profiles and set the default one to "trekking"
   useEffect(() => {
@@ -90,8 +96,10 @@ function App() {
       }
       setLoading(false);
     };
-    func();
-  }, []);
+    if (triggerLoad) {
+      func();
+    }
+  }, [triggerLoad]);
 
   useEffect(() => {
     let func = async () => {
@@ -198,14 +206,16 @@ function App() {
   };
 
   useEffect(() => {
-    routeData.update_routes(waypoints, selectedProfile).then((res) => {
-      match(res, {
-        Ok: (_val) => {},
-        Err: (error) => console.log(`Failed to calculate route ${error}`),
+    if (!loading) {
+      routeData.update_routes(waypoints, selectedProfile).then((res) => {
+        match(res, {
+          Ok: (_val) => {},
+          Err: (error) => console.log(`Failed to calculate route ${error}`),
+        });
+        return setRouteData(routeData.clone());
       });
-      return setRouteData(routeData.clone());
-    });
-  }, [waypoints, selectedProfile]);
+    }
+  }, [waypoints, selectedProfile, loading]);
 
   return (
     <div className="main">
