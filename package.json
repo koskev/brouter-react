@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@react-spring/web": "^9.7.3",
-    "@turf/turf": "7.0.0",
+    "@turf/turf": "7.1.0",
     "@types/chart.js": "^2.9.41",
     "@zalari/string-compression-utils": "^0.1.1",
     "bootstrap": "^5.3.3",
